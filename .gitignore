@@ -1,0 +1,5 @@
+# Parameters and cache (PhpStorm)
+/.idea/
+
+# Composer
+/vendor/
