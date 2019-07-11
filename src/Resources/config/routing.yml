@@ -1,0 +1,9 @@
+fixture_documentation:
+    path:     /fixtures/doc
+    methods : [GET]
+    defaults: { _controller: FixturesDoc\Controller\FixtureDocumentationController:generateDocumentationAction }
+
+fixture_reload:
+    path:     /fixtures/reload
+    methods : [GET]
+    defaults: { _controller: FixturesDoc\Controller\FixtureDocumentationController:reloadAction }

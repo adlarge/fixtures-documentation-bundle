@@ -14,7 +14,12 @@
   ],
 
   "require": {
-    "php": "^7.1"
+    "php": "^7.1",
+    "symfony/framework-bundle": "^3.3|^4.0",
+    "symfony/twig-bundle": "^3.3|^4.0",
+    "doctrine/orm": "^2.5",
+    "doctrine/doctrine-bundle": "^1.8",
+    "doctrine/doctrine-fixtures-bundle": "^2.4|^3.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^7.0",
