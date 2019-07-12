@@ -1,6 +1,6 @@
 <?php
 
-namespace FixturesDoc;
+namespace FixturesDocumentation;
 
 use FixturesDocumentation\DependencyInjection\FixturesDocumentationExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;

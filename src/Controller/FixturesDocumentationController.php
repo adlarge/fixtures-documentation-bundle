@@ -51,7 +51,7 @@ class FixturesDocumentationController extends Controller
     public function generateDocumentationAction(): Response
     {
         return $this->render(
-            'fixtures.documentation.html.twig',
+            '@FixturesDocumentation/fixtures.documentation.html.twig',
             [
                 'doc' => $this->documentationManager->getDocumentation(),
                 'docTitle' => $this->docTitle,

@@ -6,7 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ docTitle }}</title>
-    <link rel="stylesheet" href="{{ asset('bundles/fixturedocumentation/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/fixturesdocumentation/css/bootstrap.min.css') }}">
     <style>
         @import url('https://fonts.googleapis.com/css?family=Roboto');
 
@@ -74,11 +74,11 @@
                     {% if canReload %}
                         <h3 class="text-center">Actions</h3>
                         <nav class="list-group">
-                            <a href="#" onclick="reload()" class="list-group-item list-group-item-action">Recharger les données</a>
+                            <a href="#" onclick="reload()" class="list-group-item list-group-item-action">Reload data</a>
                         </nav>
                     {% endif %}
 
-                    <h3 class="text-center">Sommaire</h3>
+                    <h3 class="text-center">Contents</h3>
                     <nav class="list-group">
                         {% for section in doc.sections %}
                             <a href="#{{ section.title }}" class="list-group-item list-group-item-action">{{ section.title }}</a>
@@ -122,15 +122,15 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-body">
-                    <p class="text-center" style="margin-top: 10px;">Rechargement des données en cours...</p>
+                    <p class="text-center" style="margin-top: 10px;">Reloading data...</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="{{ asset('bundles/fixturedocumentation/js/jquery-3.3.1.slim.min.js') }}"></script>
-    <script src="{{ asset('bundles/fixturedocumentation/js/popper.min.js') }}"></script>
-    <script src="{{ asset('bundles/fixturedocumentation/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/fixturesdocumentation/js/jquery-3.3.1.slim.min.js') }}"></script>
+    <script src="{{ asset('bundles/fixturesdocumentation/js/popper.min.js') }}"></script>
+    <script src="{{ asset('bundles/fixturesdocumentation/js/bootstrap.min.js') }}"></script>
     <script>
         document.querySelector('#return-to-top').addEventListener('click', function() {
             window.scrollTo(0,0);
@@ -151,12 +151,12 @@
         async function reload() {
             reloadModal.modal('show');
 
-            let response = await fetch('{{ path('fixture_reload') }}');
+            let response = await fetch('{{ path('fixtures_reload') }}');
 
             if (response.ok) {
-                reloadModalMsg.html('Rechargement réussi.').addClass('text-success');
+                reloadModalMsg.html('Data reloaded.').addClass('text-success');
             } else {
-                reloadModalMsg.html('Une erreur est survenue.').addClass('text-danger');
+                reloadModalMsg.html('An error occurred.').addClass('text-danger');
             }
 
             await sleep(2000);
@@ -165,7 +165,7 @@
         }
 
         reloadModal.on('hidden.bs.modal', function () {
-            reloadModalMsg.html('Rechargement des données en cours...').removeClass('text-success').removeClass('text-danger');
+            reloadModalMsg.html('Reloading data...').removeClass('text-success').removeClass('text-danger');
         });
     </script>
 </body>
