@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace FixturesDoc\Model;
+namespace FixturesDocumentation\Model;
 
-use FixturesDoc\Exception\DuplicateFixtureException;
+use FixturesDocumentation\Exception\DuplicateFixtureException;
 
 class Section
 {

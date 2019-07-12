@@ -1,6 +1,6 @@
 <?php
 
-namespace FixturesDoc\DependencyInjection;
+namespace FixturesDocumentation\DependencyInjection;
 
 use Exception;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\Loader;
 /**
  * This class loads and manages the bundle configuration.
  */
-class FixtureDocumentationExtension extends Extension
+class FixturesDocumentationExtension extends Extension
 {
     /**
      * {@inheritDoc}
@@ -24,11 +24,11 @@ class FixtureDocumentationExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $container->setParameter(
-            'fixture_documentation.title',
+            'fixtures_documentation.title',
             $config['title']
         );
         $container->setParameter(
-            'fixture_documentation.reloadCommands',
+            'fixtures_documentation.reloadCommands',
             $config['reloadCommands']
         );
 

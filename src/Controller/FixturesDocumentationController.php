@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace FixturesDoc\Controller;
+namespace FixturesDocumentation\Controller;
 
 use Exception;
-use FixturesDoc\Exception\DuplicateFixtureException;
-use FixturesDoc\Service\FixtureDocumentationManager;
+use FixturesDocumentation\Exception\DuplicateFixtureException;
+use FixturesDocumentation\Service\FixturesDocumentationManager;
 use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 class FixturesDocumentationController extends Controller
 {
     /**
-     * @var FixtureDocumentationManager
+     * @var FixturesDocumentationManager
      */
     private $documentationManager;
     /**
@@ -29,12 +29,12 @@ class FixturesDocumentationController extends Controller
     /**
      * FixtureDocumentationController constructor.
      *
-     * @param FixtureDocumentationManager $documentationManager
-     * @param string                      $docTitle
-     * @param array                       $reloadCommands
+     * @param FixturesDocumentationManager $documentationManager
+     * @param string                       $docTitle
+     * @param array                        $reloadCommands
      */
     public function __construct(
-        FixtureDocumentationManager $documentationManager,
+        FixturesDocumentationManager $documentationManager,
         string $docTitle,
         array $reloadCommands
     ) {
@@ -51,7 +51,7 @@ class FixturesDocumentationController extends Controller
     public function generateDocumentationAction(): Response
     {
         return $this->render(
-            '@FixtureDocumentation/fixture.documentation.html.twig',
+            'fixtures.documentation.html.twig',
             [
                 'doc' => $this->documentationManager->getDocumentation(),
                 'docTitle' => $this->docTitle,

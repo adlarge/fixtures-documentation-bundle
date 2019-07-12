@@ -1,28 +1,28 @@
 <?php
 declare(strict_types=1);
 
-namespace FixturesDoc\EventListener;
+namespace FixturesDocumentation\EventListener;
 
-use FixturesDoc\Service\FixtureDocumentationManager;
+use FixturesDocumentation\Service\FixturesDocumentationManager;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 
-class FixtureDocumentationListener
+class FixturesDocumentationListener
 {
     /**
-     * @var FixtureDocumentationManager
+     * @var FixturesDocumentationManager
      */
-    private $fixtureDocumentationManager;
+    private $fixturesDocumentationManager;
 
     /**
-     * FixtureDocumentationListener constructor.
+     * FixturesDocumentationListener constructor.
      *
-     * @param FixtureDocumentationManager $fixtureDocumentationManager
+     * @param FixturesDocumentationManager $fixturesDocumentationManager
      */
     public function __construct(
-        FixtureDocumentationManager $fixtureDocumentationManager
+        FixturesDocumentationManager $fixturesDocumentationManager
     ) {
-        $this->fixtureDocumentationManager = $fixtureDocumentationManager;
+        $this->fixturesDocumentationManager = $fixturesDocumentationManager;
     }
 
     /**
@@ -33,7 +33,7 @@ class FixtureDocumentationListener
     public function onCommandExecution(ConsoleCommandEvent $event): void
     {
         if ($event->getCommand()->getName() === 'doctrine:fixtures:load') {
-            $this->fixtureDocumentationManager->deleteDocumentation();
+            $this->fixturesDocumentationManager->deleteDocumentation();
         }
     }
 
@@ -45,7 +45,7 @@ class FixtureDocumentationListener
     public function onTerminateExecution(ConsoleTerminateEvent $event): void
     {
         if ($event->getCommand()->getName() === 'doctrine:fixtures:load') {
-            $this->fixtureDocumentationManager->saveToFile();
+            $this->fixturesDocumentationManager->saveToFile();
         }
     }
 }

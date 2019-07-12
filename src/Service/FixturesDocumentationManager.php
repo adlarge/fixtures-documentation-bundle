@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace FixturesDoc\Service;
+namespace FixturesDocumentation\Service;
 
-use FixturesDoc\Exception\DuplicateFixtureException;
-use FixturesDoc\Model\Documentation;
+use FixturesDocumentation\Exception\DuplicateFixtureException;
+use FixturesDocumentation\Model\Documentation;
 use RuntimeException;
 use Symfony\Component\Process\Process;
 
-class FixtureDocumentationManager
+class FixturesDocumentationManager
 {
     const FILE_NAME = 'fixtures.documentation.json';
 
@@ -26,7 +26,7 @@ class FixtureDocumentationManager
     private $reloadCommands;
 
     /**
-     * FixtureDocumentationManager constructor.
+     * FixturesDocumentationManager constructor.
      *
      * @param string $projectDir
      * @param array  $reloadCommands
@@ -52,6 +52,8 @@ class FixtureDocumentationManager
 
     /**
      * Delete the file.
+     *
+     * @throws DuplicateFixtureException
      */
     public function deleteDocumentation(): void
     {
@@ -64,6 +66,8 @@ class FixtureDocumentationManager
 
     /**
      * Save the Json Array back to the file.
+     *
+     * @throws DuplicateFixtureException
      */
     public function saveToFile(): void
     {

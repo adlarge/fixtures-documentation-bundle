@@ -1,6 +1,6 @@
 <?php
 
-namespace FixturesDoc\DependencyInjection;
+namespace FixturesDocumentation\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -16,11 +16,11 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('fixtures_doc');
+        $rootNode = $treeBuilder->root('fixtures_documentation');
         $rootNode
             ->children()
                 ->scalarNode('title')
-                    ->defaultValue('Fixtures doc')->end()
+                    ->defaultValue('Fixtures documentation')->end()
                 ->arrayNode('reloadCommands')
                     ->scalarPrototype()->end()
             ->end()
