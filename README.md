@@ -1,6 +1,6 @@
 Fixtures Documentation Bundle
 =========
-This Symfony bundle generate and expose a documentation of your fixtures.
+This Symfony bundle generates and exposes a documentation of your fixtures.
 An action to reload your fixtures can also be configured.
 
 The goal of this bundle is to allow testers to be independent, they can see data and reload fixtures when they want to test again.
@@ -12,7 +12,7 @@ This is installable via [Composer](https://getcomposer.org/) as
 
     composer require --dev adlarge/fixtures-documentation
 
-The default url to access the documation is **/fixtures/doc**
+The default url to access the documentation is **/fixtures/doc**
 
 ## Configuration
 
