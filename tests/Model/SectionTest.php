@@ -8,6 +8,21 @@ use FixturesDocumentation\Exception\DuplicateFixtureException;
 
 class SectionTest extends TestCase
 {
+    public function testConstruct()
+    {
+        $section = new Section('title');
+        
+        $this->assertSame('title', $section->getTitle());
+    }
+
+    public function testSetTitle()
+    {
+        $section = new Section('title');
+        $section->setTItle('title2');
+        
+        $this->assertSame('title2', $section->getTitle());
+    }
+    
     public function testAddFixture()
     {
         $section = new Section('title');
