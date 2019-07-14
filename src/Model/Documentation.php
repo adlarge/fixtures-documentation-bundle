@@ -33,7 +33,7 @@ class Documentation
             self::$_instance = new Documentation($jsonFilePath);
         }
 
-        return self::$_instance;
+        return self::$_instance->init($jsonFilePath);
     }
 
     /**
@@ -115,7 +115,7 @@ class Documentation
      *
      * @throws DuplicateFixtureException
      */
-    private function init(string $jsonFilePath): void
+    private function init(string $jsonFilePath): self
     {
         if (is_file($jsonFilePath)) {
             $doc = json_decode(file_get_contents($jsonFilePath), true);
@@ -126,6 +126,8 @@ class Documentation
                 }
             }
         }
+
+        return $this;
     }
 
     /**
