@@ -10,6 +10,7 @@ use Symfony\Component\DependencyInjection\Loader;
 
 /**
  * This class loads and manages the bundle configuration.
+ * @codeCoverageIgnore
  */
 class FixturesDocumentationExtension extends Extension
 {
