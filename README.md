@@ -1,5 +1,9 @@
 Fixtures Documentation Bundle
 =========
+
+[![Build Status](https://travis-ci.org/adlarge/fixtures-documentation.svg?branch=master&style=flat-square)](https://travis-ci.org/adlarge/fixtures-documentation?branch=master)
+[![License](https://img.shields.io/badge/license-MIT-red.svg?style=flat-square)](LICENSE)
+
 This Symfony bundle generates and exposes a documentation of your fixtures.
 An action to reload your fixtures can also be configured.
 
