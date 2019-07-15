@@ -7,6 +7,9 @@ use FixturesDocumentation\Service\FixturesDocumentationManager;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 
+/**
+ * @codeCoverageIgnore
+ */
 class FixturesDocumentationListener
 {
     /**
