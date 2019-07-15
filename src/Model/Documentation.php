@@ -29,6 +29,7 @@ class Documentation
      */
     public static function getInstance(string $jsonFilePath): self
     {
+        // TODO : find a way to not init twice in first iteration
         if (is_null(self::$_instance)) {
             self::$_instance = new Documentation($jsonFilePath);
         }

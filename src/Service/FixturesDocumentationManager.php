@@ -81,14 +81,17 @@ class FixturesDocumentationManager
     /**
      * Reload database and fixtures.
      */
-    public function reload(): void
+    public function reload(): int
     {
+        // TODO: refacto the use of new Process to new Process(['command'])
         $process = new Process(implode(' && ', $this->reloadCommands));
         $process->setWorkingDirectory($this->projectDir);
-        $process->run();
+        $exitcode = $process->run();
 
         if (!$process->isSuccessful()) {
             throw new RuntimeException($process->getErrorOutput());
         }
+
+        return $exitcode;
     }
 }
