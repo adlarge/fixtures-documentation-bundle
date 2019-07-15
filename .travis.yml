@@ -1,0 +1,16 @@
+language: php
+
+php:
+    - '7.1'
+    - '7.2'
+    - nightly
+
+env:
+    global:
+        - PHPUNIT_FLAGS='--stop-on-failure --verbose'
+
+cache:
+    directories:
+        - $HOME/.composer/cache
+
+script: make tests
