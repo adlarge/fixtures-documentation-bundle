@@ -13,4 +13,4 @@ cache:
     directories:
         - $HOME/.composer/cache
 
-script: make tests
+script: make test
