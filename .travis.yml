@@ -13,4 +13,7 @@ cache:
     directories:
         - $HOME/.composer/cache
 
+install:
+    - composer install
+
 script: make test
