@@ -53,7 +53,7 @@ class FixturesDocumentationController extends Controller
         return $this->render(
             '@FixturesDocumentation/fixtures.documentation.html.twig',
             [
-                'doc' => $this->documentationManager->getDocumentation(),
+                'doc' => $this->documentationManager->getDocumentationFromFile(),
                 'docTitle' => $this->docTitle,
                 'canReload' => !empty($this->reloadCommands)
             ]
