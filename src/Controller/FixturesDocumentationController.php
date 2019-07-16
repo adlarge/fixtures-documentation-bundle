@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace FixturesDocumentation\Controller;
+namespace Adlarge\FixturesDocumentationBundle\Controller;
 
 use Exception;
-use FixturesDocumentation\Exception\DuplicateFixtureException;
-use FixturesDocumentation\Service\FixturesDocumentationManager;
+use Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
+use Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager;
 use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -51,7 +51,7 @@ class FixturesDocumentationController extends Controller
     public function generateDocumentationAction(): Response
     {
         return $this->render(
-            '@FixturesDocumentation/fixtures.documentation.html.twig',
+            '@AdlargeFixturesDocumentation/fixtures.documentation.html.twig',
             [
                 'doc' => $this->documentationManager->getDocumentationFromFile(),
                 'docTitle' => $this->docTitle,

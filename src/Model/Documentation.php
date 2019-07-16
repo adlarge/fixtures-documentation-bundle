@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FixturesDocumentation\Model;
+namespace Adlarge\FixturesDocumentationBundle\Model;
 
-use FixturesDocumentation\Exception\DuplicateFixtureException;
+use Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
 use TypeError;
 
 class Documentation

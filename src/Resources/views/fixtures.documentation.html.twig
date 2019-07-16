@@ -6,7 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ docTitle }}</title>
-    <link rel="stylesheet" href="{{ asset('bundles/fixturesdocumentation/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/adlargefixturesdocumentation/css/bootstrap.min.css') }}">
     <style>
         @import url('https://fonts.googleapis.com/css?family=Roboto');
 
@@ -128,9 +128,9 @@
         </div>
     </div>
 
-    <script src="{{ asset('bundles/fixturesdocumentation/js/jquery-3.3.1.slim.min.js') }}"></script>
-    <script src="{{ asset('bundles/fixturesdocumentation/js/popper.min.js') }}"></script>
-    <script src="{{ asset('bundles/fixturesdocumentation/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/adlargefixturesdocumentation/js/jquery-3.3.1.slim.min.js') }}"></script>
+    <script src="{{ asset('bundles/adlargefixturesdocumentation/js/popper.min.js') }}"></script>
+    <script src="{{ asset('bundles/adlargefixturesdocumentation/js/bootstrap.min.js') }}"></script>
     <script>
         document.querySelector('#return-to-top').addEventListener('click', function() {
             window.scrollTo(0,0);
@@ -151,7 +151,7 @@
         async function reload() {
             reloadModal.modal('show');
 
-            let response = await fetch('{{ path('fixtures_reload') }}');
+            let response = await fetch('{{ path('adlarge_fixtures_reload') }}');
 
             if (response.ok) {
                 reloadModalMsg.html('Data reloaded.').addClass('text-success');

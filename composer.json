@@ -1,5 +1,5 @@
 {
-  "name": "arnaud-large/fixtures-documentation",
+  "name": "adlarge/fixtures-documentation-bundle",
   "description": "Fixtures documentation generator",
   "keywords": ["fixture", "data", "test"],
   "type": "library",
@@ -32,12 +32,12 @@
   },
   "autoload": {
     "psr-4": {
-      "FixturesDocumentation\\": "src"
+      "Adlarge\\FixturesDocumentationBundle\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "FixturesDocumentation\\": [
+      "Adlarge\\FixturesDocumentationBundle\\": [
         "tests"
       ]
     }
