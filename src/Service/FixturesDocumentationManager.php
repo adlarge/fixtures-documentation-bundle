@@ -24,36 +24,51 @@ class FixturesDocumentationManager
      * @var array
      */
     private $reloadCommands;
+    /**
+     * @var Documentation
+     */
+    private $documentation;
 
     /**
      * FixturesDocumentationManager constructor.
      *
      * @param string $projectDir
      * @param array  $reloadCommands
+     *
+     * @throws DuplicateFixtureException
      */
     public function __construct(string $projectDir, array $reloadCommands)
     {
         $this->projectDir = $projectDir;
         $this->jsonFilePath = $this->projectDir . '/var/' . self::FILE_NAME;
         $this->reloadCommands = $reloadCommands;
+        $this->documentation = new Documentation();
     }
 
     /**
-     * Get the fixtures Json File as array.
+     * Get current Documentation.
+     *
+     * @return Documentation
+     */
+    public function getDocumentation(): Documentation
+    {
+        return $this->documentation;
+    }
+
+    /**
+     * Get generated Documentation from file for display.
      *
      * @return Documentation
      *
      * @throws DuplicateFixtureException
      */
-    public function getDocumentation(): Documentation
+    public function getDocumentationFromFile(): Documentation
     {
-        return Documentation::getInstance($this->jsonFilePath);
+        return new Documentation($this->jsonFilePath);
     }
 
     /**
      * Delete the file.
-     *
-     * @throws DuplicateFixtureException
      */
     public function deleteDocumentation(): void
     {
@@ -66,12 +81,10 @@ class FixturesDocumentationManager
 
     /**
      * Save the Json Array back to the file.
-     *
-     * @throws DuplicateFixtureException
      */
     public function saveToFile(): void
     {
-        $json = Documentation::getInstance($this->jsonFilePath)->toJson();
+        $json = $this->getDocumentation()->toJson();
 
         $file = fopen($this->jsonFilePath, 'w');
         fwrite($file, $json);
@@ -86,12 +99,12 @@ class FixturesDocumentationManager
         // TODO: refacto the use of new Process to new Process(['command'])
         $process = new Process(implode(' && ', $this->reloadCommands));
         $process->setWorkingDirectory($this->projectDir);
-        $exitcode = $process->run();
+        $exitCode = $process->run();
 
         if (!$process->isSuccessful()) {
             throw new RuntimeException($process->getErrorOutput());
         }
 
-        return $exitcode;
+        return $exitCode;
     }
 }

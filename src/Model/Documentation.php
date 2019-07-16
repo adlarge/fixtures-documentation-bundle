@@ -9,8 +9,6 @@ use TypeError;
 
 class Documentation
 {
-    private static $_instance;
-
     /**
      * List of sections in the doc.
      *
@@ -19,34 +17,17 @@ class Documentation
     private $sections = [];
 
     /**
-     * This class is a singleton use this method to get an instance.
-     *
-     * @param string $jsonFilePath
-     *
-     * @return Documentation
-     *
-     * @throws DuplicateFixtureException
-     */
-    public static function getInstance(string $jsonFilePath): self
-    {
-        // TODO : find a way to not init twice in first iteration
-        if (is_null(self::$_instance)) {
-            self::$_instance = new Documentation($jsonFilePath);
-        }
-
-        return self::$_instance->init($jsonFilePath);
-    }
-
-    /**
      * Documentation constructor.
      *
-     * @param string $jsonFilePath
+     * @param string|null $jsonFilePath
      *
      * @throws DuplicateFixtureException
      */
-    private function __construct(string $jsonFilePath)
+    public function __construct(string $jsonFilePath = null)
     {
-        $this->init($jsonFilePath);
+        if ($jsonFilePath) {
+            $this->initFromFile($jsonFilePath);
+        }
     }
 
     /**
@@ -116,7 +97,7 @@ class Documentation
      *
      * @throws DuplicateFixtureException
      */
-    private function init(string $jsonFilePath): self
+    private function initFromFile(string $jsonFilePath): void
     {
         if (is_file($jsonFilePath)) {
             $doc = json_decode(file_get_contents($jsonFilePath), true);
@@ -127,8 +108,6 @@ class Documentation
                 }
             }
         }
-
-        return $this;
     }
 
     /**

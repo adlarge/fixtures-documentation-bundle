@@ -22,7 +22,8 @@
     "doctrine/orm": "^2.5",
     "doctrine/doctrine-bundle": "^1.8",
     "doctrine/doctrine-fixtures-bundle": "^2.4|^3.0",
-    "mockery/mockery": "^1.2"
+    "mockery/mockery": "^1.2",
+    "ext-json": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "^7.0",
