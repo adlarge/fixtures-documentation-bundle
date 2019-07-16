@@ -52,7 +52,7 @@ class FixturesDocumentationControllerTest extends TestCase
     public function testGenerateDocumentationAction(): void
     {
         $mockManager = Mockery::mock('Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager');
-        $mockManager->shouldReceive('getDocumentation')
+        $mockManager->shouldReceive('getDocumentationFromFile')
             ->once();
 
         $mockController = Mockery::mock(

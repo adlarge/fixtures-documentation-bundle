@@ -37,6 +37,17 @@ class FixturesDocumentationManagerTest extends TestCase
         $this->assertInstanceOf(Documentation::class, $documentationManager->getDocumentation());
     }
 
+    public function testGetDocumentationFromFile(): void
+    {
+        vfsStream::newDirectory('var')->at($this->root);
+        $documentationManager = new FixturesDocumentationManager(
+            $this->root->url(),
+            ['dummyCommand']
+        );
+
+        $this->assertInstanceOf(Documentation::class, $documentationManager->getDocumentationFromFile());
+    }
+
     public function testDeleteDocumentation(): void
     {
         vfsStream::newDirectory('var')->at($this->root);
