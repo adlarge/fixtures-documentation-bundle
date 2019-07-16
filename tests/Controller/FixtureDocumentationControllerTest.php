@@ -11,13 +11,13 @@ class FixturesDocumentationControllerTest extends TestCase
 {
     public function testReloadAction(): void
     {
-        $mockManager = Mockery::mock('FixturesDocumentation\Service\FixturesDocumentationManager');
+        $mockManager = Mockery::mock('Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager');
         $mockManager->shouldReceive('reload')
             ->once()
             ->andReturn(1);
 
         $mockController = Mockery::mock(
-            'FixturesDocumentation\Controller\FixturesDocumentationController',
+            'Adlarge\FixturesDocumentationBundle\Controller\FixturesDocumentationController',
             [
                 $mockManager,
                 'title',
@@ -31,13 +31,13 @@ class FixturesDocumentationControllerTest extends TestCase
 
     public function testReloadActionWithException(): void
     {
-        $mockManager = Mockery::mock('FixturesDocumentation\Service\FixturesDocumentationManager');
+        $mockManager = Mockery::mock('Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager');
         $mockManager->shouldReceive('reload')
             ->once()
             ->andThrow(new RuntimeException());
 
         $mockController = Mockery::mock(
-            'FixturesDocumentation\Controller\FixturesDocumentationController',
+            'Adlarge\FixturesDocumentationBundle\Controller\FixturesDocumentationController',
             [
                 $mockManager,
                 'title',
@@ -51,12 +51,12 @@ class FixturesDocumentationControllerTest extends TestCase
 
     public function testGenerateDocumentationAction(): void
     {
-        $mockManager = Mockery::mock('FixturesDocumentation\Service\FixturesDocumentationManager');
+        $mockManager = Mockery::mock('Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager');
         $mockManager->shouldReceive('getDocumentation')
             ->once();
 
         $mockController = Mockery::mock(
-            'FixturesDocumentation\Controller\FixturesDocumentationController',
+            'Adlarge\FixturesDocumentationBundle\Controller\FixturesDocumentationController',
             [
                 $mockManager,
                 'title',

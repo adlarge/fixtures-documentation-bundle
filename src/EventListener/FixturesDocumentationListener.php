@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace FixturesDocumentation\EventListener;
+namespace Adlarge\FixturesDocumentationBundle\EventListener;
 
-use FixturesDocumentation\Service\FixturesDocumentationManager;
+use Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 

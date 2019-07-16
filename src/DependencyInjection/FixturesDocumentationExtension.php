@@ -1,6 +1,6 @@
 <?php
 
-namespace FixturesDocumentation\DependencyInjection;
+namespace Adlarge\FixturesDocumentationBundle\DependencyInjection;
 
 use Exception;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -25,11 +25,11 @@ class FixturesDocumentationExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $container->setParameter(
-            'fixtures_documentation.title',
+            'adlarge_fixtures_documentation.title',
             $config['title']
         );
         $container->setParameter(
-            'fixtures_documentation.reloadCommands',
+            'adlarge_fixtures_documentation.reloadCommands',
             $config['reloadCommands']
         );
 
@@ -38,5 +38,10 @@ class FixturesDocumentationExtension extends Extension
             new FileLocator(__DIR__ . '/../Resources/config')
         );
         $loader->load('services.yml');
+    }
+
+    public function getAlias(): string
+    {
+        return 'adlarge_fixtures_documentation';
     }
 }

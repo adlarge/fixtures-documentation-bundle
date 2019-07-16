@@ -3,8 +3,8 @@
 namespace Tests\Model;
 
 use PHPUnit\Framework\TestCase;
-use FixturesDocumentation\Service\FixturesDocumentationManager;
-use FixturesDocumentation\Model\Documentation;
+use Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager;
+use Adlarge\FixturesDocumentationBundle\Model\Documentation;
 use org\bovigo\vfs\vfsStream;
 use RuntimeException;
 use Mockery;

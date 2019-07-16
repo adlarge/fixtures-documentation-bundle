@@ -3,7 +3,7 @@
 namespace Tests\Model;
 
 use PHPUnit\Framework\TestCase;
-use FixturesDocumentation\Model\Documentation;
+use Adlarge\FixturesDocumentationBundle\Model\Documentation;
 use TypeError;
 use org\bovigo\vfs\vfsStream;
 

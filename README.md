@@ -20,7 +20,7 @@ The default url to access the documentation is **/fixtures/doc**
 
 ## Configuration
 
-    fixtures_documentation:
+    adlarge_fixtures_documentation:
         title: 'Your title'
         reloadCommands:
             - php bin/console doctrine:fixtures:load

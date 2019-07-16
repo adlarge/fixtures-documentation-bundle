@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FixturesDocumentation\Exception;
+namespace Adlarge\FixturesDocumentationBundle\Exception;
 
 use Exception;
 

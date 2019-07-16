@@ -3,8 +3,8 @@
 namespace Tests\Model;
 
 use PHPUnit\Framework\TestCase;
-use FixturesDocumentation\Model\Section;
-use FixturesDocumentation\Exception\DuplicateFixtureException;
+use Adlarge\FixturesDocumentationBundle\Model\Section;
+use Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
 
 class SectionTest extends TestCase
 {

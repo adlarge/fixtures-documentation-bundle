@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace FixturesDocumentation\Service;
+namespace Adlarge\FixturesDocumentationBundle\Service;
 
-use FixturesDocumentation\Exception\DuplicateFixtureException;
-use FixturesDocumentation\Model\Documentation;
+use Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
+use Adlarge\FixturesDocumentationBundle\Model\Documentation;
 use RuntimeException;
 use Symfony\Component\Process\Process;
 
