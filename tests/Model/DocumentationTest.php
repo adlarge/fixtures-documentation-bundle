@@ -12,18 +12,17 @@ class DocumentationTest extends TestCase
     public function setUp(): void
     {
         $this->root = vfsStream::setup();
-        $this->documentation = Documentation::getInstance($this->root->url() . "/file.json");
     }
-    
+
     public function tearDown(): void
     {
-        $documentation = Documentation::getInstance('dummyPath');
+        $documentation = new Documentation();
         $documentation->reset();
     }
 
     public function testAddFixture(): void
     {
-        $documentation = Documentation::getInstance('dummyPath');
+        $documentation = new Documentation();
 
         $documentation->addFixture('fixtures', ['id' => 1, 'name' => 'fixture1']);
 
@@ -33,7 +32,7 @@ class DocumentationTest extends TestCase
 
     public function testAddFixtureWithSameSection(): void
     {
-        $documentation = Documentation::getInstance('dummyPath');
+        $documentation = new Documentation();;
         
         $documentation->addFixture('fixtures', ['id' => 1, 'name' => 'fixture1']);
         $documentation->addFixture('fixtures', ['id' => 2, 'name' => 'fixture2']);
@@ -43,7 +42,7 @@ class DocumentationTest extends TestCase
 
     public function testAddFixtureWithDifferentSection(): void
     {
-        $documentation = Documentation::getInstance('dummyPath');
+        $documentation = new Documentation();;
         
         $documentation->addFixture('fixtures', ['id' => 1, 'name' => 'fixture1']);
         $documentation->addFixture('other', ['id' => 1, 'name' => 'fixture1']);
@@ -51,18 +50,18 @@ class DocumentationTest extends TestCase
         $this->assertCount(2, $documentation->getSections());
     }
 
-    public function testAddFixtureWithMultidimensionnalArray(): void
+    public function testAddFixtureWithMultidimensionalArray(): void
     {
         $this->expectException(TypeError::class);
         
-        $documentation = Documentation::getInstance('dummyPath');
+        $documentation = new Documentation();;
         
         $documentation->addFixture('fixtures', ['id' => 1, 'array' => ['name' => 'fixture1', 'color' => 'red']]);
     }
 
     public function testReset(): void
     {
-        $documentation = Documentation::getInstance('dummyPath');
+        $documentation = new Documentation();;
         
         $documentation->addFixture('fixtures', ['id' => 1, 'name' => 'fixture1']);
         $this->assertCount(1, $documentation->getSections());
@@ -73,7 +72,7 @@ class DocumentationTest extends TestCase
 
     public function testToJson(): void
     {
-        $documentation = Documentation::getInstance('dummyPath');
+        $documentation = new Documentation();;
         
         $documentation->addFixture('some', ['id' => 1, 'name' => 'fixture1']);
         $documentation->addFixture('some', ['id' => 2, 'name' => 'fixture2']);
@@ -91,7 +90,7 @@ class DocumentationTest extends TestCase
             '{"some":{"fixtures":[{"id":1,"name":"fixture1"},{"id":2,"name":"fixture2"}]},"others":{"fixtures":[{"id":1,"pseudo":"autre2"}]}}'
         );
         
-        $documentation = Documentation::getInstance($this->root->url() . "/file.json");
+        $documentation = new Documentation($this->root->url() . "/file.json");
         $this->assertCount(2, $documentation->getSections());
     }
 }
