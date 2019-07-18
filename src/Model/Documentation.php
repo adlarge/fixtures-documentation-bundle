@@ -19,7 +19,7 @@ class Documentation
     /**
      * Documentation constructor.
      *
-     * @param string|null $jsonFilePath
+     * @param string $jsonFilePath
      *
      * @throws DuplicateFixtureException
      */
@@ -41,20 +41,19 @@ class Documentation
     /**
      * Add a fixture to the documentation.
      *
-     * @param string $section
-     * @param array  $fixture
+     * @param string $sectionTitle
+     * @param array $fixture
      *
      * @return Documentation
      *
      * @throws DuplicateFixtureException
      */
-    public function addFixture(string $section, array $fixture): self
+    public function addFixture(string $sectionTitle, array $fixture): self
     {
         if (count($fixture) !== count($fixture, COUNT_RECURSIVE)) {
             throw new TypeError('A fixture can\'t be a multidimensional array.');
         }
-
-        $section = $this->addSection($section);
+        $section = $this->addSection($sectionTitle);
         $section->addFixture($fixture);
 
         return $this;

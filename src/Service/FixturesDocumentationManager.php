@@ -10,7 +10,7 @@ use Symfony\Component\Process\Process;
 
 class FixturesDocumentationManager
 {
-    const FILE_NAME = 'fixtures.documentation.json';
+    private const FILE_NAME = 'fixtures.documentation.json';
 
     /**
      * @var string
@@ -86,7 +86,7 @@ class FixturesDocumentationManager
     {
         $json = $this->getDocumentation()->toJson();
 
-        $file = fopen($this->jsonFilePath, 'w');
+        $file = fopen($this->jsonFilePath, 'wb');
         fwrite($file, $json);
         fclose($file);
     }
