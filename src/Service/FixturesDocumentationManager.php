@@ -70,9 +70,9 @@ class FixturesDocumentationManager
     /**
      * Delete the file.
      */
-    public function deleteDocumentation(): void
+    public function reset(): void
     {
-        $this->getDocumentation()->reset();
+        $this->documentation->reset();
 
         if (is_file($this->jsonFilePath)) {
             unlink($this->jsonFilePath);
@@ -82,9 +82,9 @@ class FixturesDocumentationManager
     /**
      * Save the Json Array back to the file.
      */
-    public function saveToFile(): void
+    public function save(): void
     {
-        $json = $this->getDocumentation()->toJson();
+        $json = $this->documentation->toJson();
 
         $file = fopen($this->jsonFilePath, 'wb');
         fwrite($file, $json);

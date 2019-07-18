@@ -35,8 +35,9 @@ class FixturesDocumentationListener
      */
     public function onCommandExecution(ConsoleCommandEvent $event): void
     {
+        //TODO: use configuration to detect the command
         if ($event->getCommand() && $event->getCommand()->getName() === 'doctrine:fixtures:load') {
-            $this->fixturesDocumentationManager->deleteDocumentation();
+            $this->fixturesDocumentationManager->reset();
         }
     }
 
@@ -47,8 +48,9 @@ class FixturesDocumentationListener
      */
     public function onTerminateExecution(ConsoleTerminateEvent $event): void
     {
+        //TODO: use configuration to detect the command
         if ($event->getCommand() && $event->getCommand()->getName() === 'doctrine:fixtures:load') {
-            $this->fixturesDocumentationManager->saveToFile();
+            $this->fixturesDocumentationManager->save();
         }
     }
 }

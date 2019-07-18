@@ -2,9 +2,11 @@
 
 namespace Tests\Model;
 
+use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
 use Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager;
 use Adlarge\FixturesDocumentationBundle\Model\Documentation;
+use \Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
 use org\bovigo\vfs\vfsStream;
 use RuntimeException;
 use Mockery;
@@ -15,6 +17,9 @@ use Mockery;
  */
 class FixturesDocumentationManagerTest extends TestCase
 {
+    /** @var vfsStreamDirectory $root */
+    private $root;
+
     public function setUp(): void
     {
         $this->root = vfsStream::setup();
@@ -25,7 +30,10 @@ class FixturesDocumentationManagerTest extends TestCase
     {
         Mockery::close();
     }
-    
+
+    /**
+     * @throws DuplicateFixtureException
+     */
     public function testGetDocumentation(): void
     {
         vfsStream::newDirectory('var')->at($this->root);
@@ -37,18 +45,10 @@ class FixturesDocumentationManagerTest extends TestCase
         $this->assertInstanceOf(Documentation::class, $documentationManager->getDocumentation());
     }
 
-    public function testGetDocumentationFromFile(): void
-    {
-        vfsStream::newDirectory('var')->at($this->root);
-        $documentationManager = new FixturesDocumentationManager(
-            $this->root->url(),
-            ['dummyCommand']
-        );
-
-        $this->assertInstanceOf(Documentation::class, $documentationManager->getDocumentationFromFile());
-    }
-
-    public function testDeleteDocumentation(): void
+    /**
+     * @throws DuplicateFixtureException
+     */
+    public function testReset(): void
     {
         vfsStream::newDirectory('var')->at($this->root);
         $documentationManager = new FixturesDocumentationManager(
@@ -57,15 +57,18 @@ class FixturesDocumentationManagerTest extends TestCase
         );
 
         file_put_contents(
-            $this->root->url() . "/var/fixtures.documentation.json", 
+            $this->root->url() . '/var/fixtures.documentation.json',
             '{}'
         );
         $this->assertTrue($this->root->hasChild('var/fixtures.documentation.json'));
-        $documentationManager->deleteDocumentation();
+        $documentationManager->reset();
         $this->assertFalse($this->root->hasChild('var/fixtures.documentation.json'));
     }
 
-    public function testSaveToFile(): void
+    /**
+     * @throws DuplicateFixtureException
+     */
+    public function testSave(): void
     {
         vfsStream::newDirectory('var')->at($this->root);
         $documentationManager = new FixturesDocumentationManager(
@@ -73,10 +76,13 @@ class FixturesDocumentationManagerTest extends TestCase
             ['dummyCommand']
         );
 
-        $documentationManager->saveToFile();
+        $documentationManager->save();
         $this->assertTrue($this->root->hasChild('var/fixtures.documentation.json'));
     }
 
+    /**
+     * @throws DuplicateFixtureException
+     */
     public function testReloadWithUnknownCommand(): void
     {
         $this->expectException(RuntimeException::class);
@@ -89,6 +95,9 @@ class FixturesDocumentationManagerTest extends TestCase
         $documentationManager->reload();
     }
 
+    /**
+     * @throws DuplicateFixtureException
+     */
     public function testReload(): void
     {
         $mockProcess = Mockery::mock('overload:Symfony\Component\Process\Process');

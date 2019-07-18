@@ -4,14 +4,13 @@ declare(strict_types=1);
 namespace Adlarge\FixturesDocumentationBundle\Controller;
 
 use Exception;
-use Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
 use Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager;
 use RuntimeException;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class FixturesDocumentationController extends Controller
+class FixturesDocumentationController extends AbstractController
 {
     /**
      * @var FixturesDocumentationManager
@@ -30,8 +29,8 @@ class FixturesDocumentationController extends Controller
      * FixtureDocumentationController constructor.
      *
      * @param FixturesDocumentationManager $documentationManager
-     * @param string                       $docTitle
-     * @param array                        $reloadCommands
+     * @param string $docTitle
+     * @param array $reloadCommands
      */
     public function __construct(
         FixturesDocumentationManager $documentationManager,
@@ -45,15 +44,13 @@ class FixturesDocumentationController extends Controller
 
     /**
      * @return Response
-     *
-     * @throws DuplicateFixtureException
      */
     public function generateDocumentationAction(): Response
     {
         return $this->render(
             '@AdlargeFixturesDocumentation/fixtures.documentation.html.twig',
             [
-                'doc' => $this->documentationManager->getDocumentationFromFile(),
+                'doc' => $this->documentationManager->getDocumentation(),
                 'docTitle' => $this->docTitle,
                 'canReload' => !empty($this->reloadCommands)
             ]

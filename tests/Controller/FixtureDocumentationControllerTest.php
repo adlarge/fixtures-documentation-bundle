@@ -2,22 +2,29 @@
 
 namespace Tests\Model;
 
+use Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager;
+use Adlarge\FixturesDocumentationBundle\Controller\FixturesDocumentationController;
+
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Response;
 use RuntimeException;
+use Exception;
 use Mockery;
 
-class FixturesDocumentationControllerTest extends TestCase
+class FixtureDocumentationControllerTest extends TestCase
 {
+    /**
+     * @throws Exception
+     */
     public function testReloadAction(): void
     {
-        $mockManager = Mockery::mock('Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager');
+        $mockManager = Mockery::mock(FixturesDocumentationManager::class);
         $mockManager->shouldReceive('reload')
             ->once()
             ->andReturn(1);
 
         $mockController = Mockery::mock(
-            'Adlarge\FixturesDocumentationBundle\Controller\FixturesDocumentationController',
+            FixturesDocumentationController::class,
             [
                 $mockManager,
                 'title',
@@ -31,13 +38,13 @@ class FixturesDocumentationControllerTest extends TestCase
 
     public function testReloadActionWithException(): void
     {
-        $mockManager = Mockery::mock('Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager');
+        $mockManager = Mockery::mock(FixturesDocumentationManager::class);
         $mockManager->shouldReceive('reload')
             ->once()
             ->andThrow(new RuntimeException());
 
         $mockController = Mockery::mock(
-            'Adlarge\FixturesDocumentationBundle\Controller\FixturesDocumentationController',
+            FixturesDocumentationController::class,
             [
                 $mockManager,
                 'title',
@@ -51,12 +58,12 @@ class FixturesDocumentationControllerTest extends TestCase
 
     public function testGenerateDocumentationAction(): void
     {
-        $mockManager = Mockery::mock('Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager');
-        $mockManager->shouldReceive('getDocumentationFromFile')
+        $mockManager = Mockery::mock(FixturesDocumentationManager::class);
+        $mockManager->shouldReceive('getDocumentation')
             ->once();
 
         $mockController = Mockery::mock(
-            'Adlarge\FixturesDocumentationBundle\Controller\FixturesDocumentationController',
+            FixturesDocumentationController::class,
             [
                 $mockManager,
                 'title',
