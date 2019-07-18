@@ -19,14 +19,29 @@ class Documentation
     /**
      * Documentation constructor.
      *
-     * @param string $jsonFilePath
-     *
+     * @param string $jsonString
      * @throws DuplicateFixtureException
      */
-    public function __construct(string $jsonFilePath = null)
+    public function __construct(string $jsonString = null)
     {
-        if ($jsonFilePath) {
-            $this->initFromFile($jsonFilePath);
+        if ($jsonString) {
+            $this->init($jsonString);
+        }
+    }
+
+    /**
+     * Create the documentation from jsonFile.
+     *
+     * @param string $jsonString
+     * @throws DuplicateFixtureException
+     */
+    protected function init(string $jsonString): void
+    {
+        $doc = json_decode($jsonString, true);
+        foreach ($doc as $sectionTitle => $section) {
+            foreach ($section['fixtures'] as $item) {
+                $this->addFixture($sectionTitle, $item);
+            }
         }
     }
 
@@ -87,26 +102,6 @@ class Documentation
         }
 
         return json_encode($doc);
-    }
-
-    /**
-     * Create the documentation from jsonFile.
-     *
-     * @param string $jsonFilePath
-     *
-     * @throws DuplicateFixtureException
-     */
-    private function initFromFile(string $jsonFilePath): void
-    {
-        if (is_file($jsonFilePath)) {
-            $doc = json_decode(file_get_contents($jsonFilePath), true);
-
-            foreach ($doc as $sectionTitle => $section) {
-                foreach ($section['fixtures'] as $item) {
-                    $this->addFixture($sectionTitle, $item);
-                }
-            }
-        }
     }
 
     /**
