@@ -42,9 +42,21 @@ class FixturesDocumentationManager
         $this->projectDir = $projectDir;
         $this->jsonFilePath = $this->projectDir . '/var/' . self::FILE_NAME;
         $this->reloadCommands = $reloadCommands;
-        $this->documentation = new Documentation();
+
+        $this->initDocumentation();
     }
 
+    /**
+     * @throws DuplicateFixtureException
+     */
+    protected function initDocumentation(): void
+    {
+        $jsonString = null;
+        if ($this->jsonFilePath && is_file($this->jsonFilePath)) {
+            $jsonString = file_get_contents($this->jsonFilePath);
+        }
+        $this->documentation = new Documentation($jsonString);
+    }
     /**
      * Get current Documentation.
      *
@@ -53,18 +65,6 @@ class FixturesDocumentationManager
     public function getDocumentation(): Documentation
     {
         return $this->documentation;
-    }
-
-    /**
-     * Get generated Documentation from file for display.
-     *
-     * @return Documentation
-     *
-     * @throws DuplicateFixtureException
-     */
-    public function getDocumentationFromFile(): Documentation
-    {
-        return new Documentation($this->jsonFilePath);
     }
 
     /**
