@@ -1,0 +1,25 @@
+services:
+    # Controllers
+    Adlarge\FixturesDocumentationBundle\Controller\FixturesDocumentationController:
+        public: true
+        autowire: true
+        arguments:
+            $docTitle: '%adlarge_fixtures_documentation.title%'
+            $reloadCommands: '%adlarge_fixtures_documentation.reloadCommands%'
+
+    # Managers
+    Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager:
+        public: true
+        autowire: true
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+            $reloadCommands: '%adlarge_fixtures_documentation.reloadCommands%'
+
+    # Listeners
+    Adlarge\FixturesDocumentationBundle\EventListener\FixturesDocumentationListener:
+        public: true
+        arguments:
+            - '@Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager'
+        tags:
+            - { name: kernel.event_listener, event: console.command, method: onCommandExecution }
+            - { name: kernel.event_listener, event: console.terminate, method: onTerminateExecution }

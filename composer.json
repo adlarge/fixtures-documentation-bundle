@@ -1,0 +1,45 @@
+{
+  "name": "adlarge/fixtures-documentation-bundle",
+  "description": "Fixtures documentation generator",
+  "keywords": ["fixture", "data", "test"],
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Arnaud Large"
+    },
+    {
+      "name": "Alain Begey"
+    }
+  ],
+
+  "require": {
+    "php": "^7.1",
+    "symfony/asset": "^3.4|^4.0",
+    "symfony/framework-bundle": "^3.4|^4.0",
+    "symfony/twig-bundle": "^3.4|^4.0",
+    "symfony/process": "^3.4|^4.0",
+    "doctrine/orm": "^2.5",
+    "doctrine/doctrine-bundle": "^1.8",
+    "doctrine/doctrine-fixtures-bundle": "^2.4|^3.0",
+    "mockery/mockery": "^1.2",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.0",
+    "symfony/phpunit-bridge": "^3.4.5 || ^4.0.5",
+    "mikey179/vfsstream": "^1.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "Adlarge\\FixturesDocumentationBundle\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Adlarge\\FixturesDocumentationBundle\\": [
+        "tests"
+      ]
+    }
+  }
+}
