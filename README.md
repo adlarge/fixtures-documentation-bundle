@@ -12,7 +12,7 @@ The goal of this bundle is to allow testers to be independent, they can see data
 ## Installation
 
 This is installable via [Composer](https://getcomposer.org/) as
-[adlarge/fixtures-documentation](https://packagist.org/packages/adlarge/fixtures-documentation-bundle):
+[adlarge/fixtures-documentation-bundle](https://packagist.org/packages/adlarge/fixtures-documentation-bundle):
 
     composer require --dev adlarge/fixtures-documentation-bundle
 
