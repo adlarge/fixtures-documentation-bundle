@@ -12,9 +12,9 @@ The goal of this bundle is to allow testers to be independent, they can see data
 ## Installation
 
 This is installable via [Composer](https://getcomposer.org/) as
-[adlarge/fixtures-documentation](https://packagist.org/packages/adlarge/fixtures-documentation):
+[adlarge/fixtures-documentation](https://packagist.org/packages/adlarge/fixtures-documentation-bundle):
 
-    composer require --dev adlarge/fixtures-documentation
+    composer require --dev adlarge/fixtures-documentation-bundle
 
 The default url to access the documentation is **/fixtures/doc**
 
