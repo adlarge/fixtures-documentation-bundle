@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace FixturesDocumentation\Service;
+namespace Adlarge\FixturesDocumentationBundle\Service;
 
-use FixturesDocumentation\Exception\DuplicateFixtureException;
-use FixturesDocumentation\Model\Documentation;
+use Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
+use Adlarge\FixturesDocumentationBundle\Model\Documentation;
 use RuntimeException;
 use Symfony\Component\Process\Process;
 
 class FixturesDocumentationManager
 {
-    const FILE_NAME = 'fixtures.documentation.json';
+    private const FILE_NAME = 'fixtures.documentation.json';
 
     /**
      * @var string
@@ -24,40 +24,55 @@ class FixturesDocumentationManager
      * @var array
      */
     private $reloadCommands;
+    /**
+     * @var Documentation
+     */
+    private $documentation;
 
     /**
      * FixturesDocumentationManager constructor.
      *
      * @param string $projectDir
      * @param array  $reloadCommands
+     *
+     * @throws DuplicateFixtureException
      */
     public function __construct(string $projectDir, array $reloadCommands)
     {
         $this->projectDir = $projectDir;
         $this->jsonFilePath = $this->projectDir . '/var/' . self::FILE_NAME;
         $this->reloadCommands = $reloadCommands;
+
+        $this->initDocumentation();
     }
 
     /**
-     * Get the fixtures Json File as array.
+     * @throws DuplicateFixtureException
+     */
+    protected function initDocumentation(): void
+    {
+        $jsonString = null;
+        if ($this->jsonFilePath && is_file($this->jsonFilePath)) {
+            $jsonString = file_get_contents($this->jsonFilePath);
+        }
+        $this->documentation = new Documentation($jsonString);
+    }
+    /**
+     * Get current Documentation.
      *
      * @return Documentation
-     *
-     * @throws DuplicateFixtureException
      */
     public function getDocumentation(): Documentation
     {
-        return Documentation::getInstance($this->jsonFilePath);
+        return $this->documentation;
     }
 
     /**
      * Delete the file.
-     *
-     * @throws DuplicateFixtureException
      */
-    public function deleteDocumentation(): void
+    public function reset(): void
     {
-        $this->getDocumentation()->reset();
+        $this->documentation->reset();
 
         if (is_file($this->jsonFilePath)) {
             unlink($this->jsonFilePath);
@@ -66,14 +81,12 @@ class FixturesDocumentationManager
 
     /**
      * Save the Json Array back to the file.
-     *
-     * @throws DuplicateFixtureException
      */
-    public function saveToFile(): void
+    public function save(): void
     {
-        $json = Documentation::getInstance($this->jsonFilePath)->toJson();
+        $json = $this->documentation->toJson();
 
-        $file = fopen($this->jsonFilePath, 'w');
+        $file = fopen($this->jsonFilePath, 'wb');
         fwrite($file, $json);
         fclose($file);
     }
@@ -86,12 +99,12 @@ class FixturesDocumentationManager
         // TODO: refacto the use of new Process to new Process(['command'])
         $process = new Process(implode(' && ', $this->reloadCommands));
         $process->setWorkingDirectory($this->projectDir);
-        $exitcode = $process->run();
+        $exitCode = $process->run();
 
         if (!$process->isSuccessful()) {
             throw new RuntimeException($process->getErrorOutput());
         }
 
-        return $exitcode;
+        return $exitCode;
     }
 }

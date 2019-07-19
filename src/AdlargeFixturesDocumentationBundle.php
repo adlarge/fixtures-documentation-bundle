@@ -1,14 +1,14 @@
 <?php
 
-namespace FixturesDocumentation;
+namespace Adlarge\FixturesDocumentationBundle;
 
-use FixturesDocumentation\DependencyInjection\FixturesDocumentationExtension;
+use Adlarge\FixturesDocumentationBundle\DependencyInjection\FixturesDocumentationExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
  * @codeCoverageIgnore
  */
-class FixturesDocumentationBundle extends Bundle
+class AdlargeFixturesDocumentationBundle extends Bundle
 {
     /**
      * @return FixturesDocumentationExtension

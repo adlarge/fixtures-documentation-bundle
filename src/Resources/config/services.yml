@@ -1,25 +1,25 @@
 services:
     # Controllers
-    FixturesDocumentation\Controller\FixturesDocumentationController:
+    Adlarge\FixturesDocumentationBundle\Controller\FixturesDocumentationController:
         public: true
         autowire: true
         arguments:
-            $docTitle: '%fixtures_documentation.title%'
-            $reloadCommands: '%fixtures_documentation.reloadCommands%'
+            $docTitle: '%adlarge_fixtures_documentation.title%'
+            $reloadCommands: '%adlarge_fixtures_documentation.reloadCommands%'
 
     # Managers
-    FixturesDocumentation\Service\FixturesDocumentationManager:
+    Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager:
         public: true
         autowire: true
         arguments:
             $projectDir: '%kernel.project_dir%'
-            $reloadCommands: '%fixtures_documentation.reloadCommands%'
+            $reloadCommands: '%adlarge_fixtures_documentation.reloadCommands%'
 
     # Listeners
-    FixturesDocumentation\EventListener\FixturesDocumentationListener:
+    Adlarge\FixturesDocumentationBundle\EventListener\FixturesDocumentationListener:
         public: true
         arguments:
-            - '@FixturesDocumentation\Service\FixturesDocumentationManager'
+            - '@Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager'
         tags:
             - { name: kernel.event_listener, event: console.command, method: onCommandExecution }
             - { name: kernel.event_listener, event: console.terminate, method: onTerminateExecution }

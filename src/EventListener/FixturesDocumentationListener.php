@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace FixturesDocumentation\EventListener;
+namespace Adlarge\FixturesDocumentationBundle\EventListener;
 
-use FixturesDocumentation\Service\FixturesDocumentationManager;
+use Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 
@@ -35,8 +35,9 @@ class FixturesDocumentationListener
      */
     public function onCommandExecution(ConsoleCommandEvent $event): void
     {
-        if ($event->getCommand()->getName() === 'doctrine:fixtures:load') {
-            $this->fixturesDocumentationManager->deleteDocumentation();
+        //TODO: use configuration to detect the command
+        if ($event->getCommand() && $event->getCommand()->getName() === 'doctrine:fixtures:load') {
+            $this->fixturesDocumentationManager->reset();
         }
     }
 
@@ -47,8 +48,9 @@ class FixturesDocumentationListener
      */
     public function onTerminateExecution(ConsoleTerminateEvent $event): void
     {
-        if ($event->getCommand()->getName() === 'doctrine:fixtures:load') {
-            $this->fixturesDocumentationManager->saveToFile();
+        //TODO: use configuration to detect the command
+        if ($event->getCommand() && $event->getCommand()->getName() === 'doctrine:fixtures:load') {
+            $this->fixturesDocumentationManager->save();
         }
     }
 }

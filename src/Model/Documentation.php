@@ -2,15 +2,13 @@
 
 declare(strict_types=1);
 
-namespace FixturesDocumentation\Model;
+namespace Adlarge\FixturesDocumentationBundle\Model;
 
-use FixturesDocumentation\Exception\DuplicateFixtureException;
+use Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
 use TypeError;
 
 class Documentation
 {
-    private static $_instance;
-
     /**
      * List of sections in the doc.
      *
@@ -19,34 +17,32 @@ class Documentation
     private $sections = [];
 
     /**
-     * This class is a singleton use this method to get an instance.
+     * Documentation constructor.
      *
-     * @param string $jsonFilePath
-     *
-     * @return Documentation
-     *
+     * @param string $jsonString
      * @throws DuplicateFixtureException
      */
-    public static function getInstance(string $jsonFilePath): self
+    public function __construct(string $jsonString = null)
     {
-        // TODO : find a way to not init twice in first iteration
-        if (is_null(self::$_instance)) {
-            self::$_instance = new Documentation($jsonFilePath);
+        if ($jsonString) {
+            $this->init($jsonString);
         }
-
-        return self::$_instance->init($jsonFilePath);
     }
 
     /**
-     * Documentation constructor.
+     * Create the documentation from jsonFile.
      *
-     * @param string $jsonFilePath
-     *
+     * @param string $jsonString
      * @throws DuplicateFixtureException
      */
-    private function __construct(string $jsonFilePath)
+    protected function init(string $jsonString): void
     {
-        $this->init($jsonFilePath);
+        $doc = json_decode($jsonString, true);
+        foreach ($doc as $sectionTitle => $section) {
+            foreach ($section['fixtures'] as $item) {
+                $this->addFixture($sectionTitle, $item);
+            }
+        }
     }
 
     /**
@@ -60,20 +56,19 @@ class Documentation
     /**
      * Add a fixture to the documentation.
      *
-     * @param string $section
-     * @param array  $fixture
+     * @param string $sectionTitle
+     * @param array $fixture
      *
      * @return Documentation
      *
      * @throws DuplicateFixtureException
      */
-    public function addFixture(string $section, array $fixture): self
+    public function addFixture(string $sectionTitle, array $fixture): self
     {
         if (count($fixture) !== count($fixture, COUNT_RECURSIVE)) {
             throw new TypeError('A fixture can\'t be a multidimensional array.');
         }
-
-        $section = $this->addSection($section);
+        $section = $this->addSection($sectionTitle);
         $section->addFixture($fixture);
 
         return $this;
@@ -107,28 +102,6 @@ class Documentation
         }
 
         return json_encode($doc);
-    }
-
-    /**
-     * Create the documentation from jsonFile.
-     *
-     * @param string $jsonFilePath
-     *
-     * @throws DuplicateFixtureException
-     */
-    private function init(string $jsonFilePath): self
-    {
-        if (is_file($jsonFilePath)) {
-            $doc = json_decode(file_get_contents($jsonFilePath), true);
-
-            foreach ($doc as $sectionTitle => $section) {
-                foreach ($section['fixtures'] as $item) {
-                    $this->addFixture($sectionTitle, $item);
-                }
-            }
-        }
-
-        return $this;
     }
 
     /**

@@ -3,27 +3,30 @@
 namespace Tests\Model;
 
 use PHPUnit\Framework\TestCase;
-use FixturesDocumentation\Model\Section;
-use FixturesDocumentation\Exception\DuplicateFixtureException;
+use Adlarge\FixturesDocumentationBundle\Model\Section;
+use Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
 
 class SectionTest extends TestCase
 {
-    public function testConstruct()
+    public function testConstruct(): void
     {
         $section = new Section('title');
         
         $this->assertSame('title', $section->getTitle());
     }
 
-    public function testSetTitle()
+    public function testSetTitle(): void
     {
         $section = new Section('title');
         $section->setTItle('title2');
         
         $this->assertSame('title2', $section->getTitle());
     }
-    
-    public function testAddFixture()
+
+    /**
+     * @throws DuplicateFixtureException
+     */
+    public function testAddFixture(): void
     {
         $section = new Section('title');
         $section->addFixture(['id' => '1', 'name' => 'fixture1']);
@@ -39,7 +42,10 @@ class SectionTest extends TestCase
         $this->assertSame($expectedHeaders, $section->getHeaders());
     }
 
-    public function testAddFixtureMergeHeaders()
+    /**
+     * @throws DuplicateFixtureException
+     */
+    public function testAddFixtureMergeHeaders(): void
     {
         $section = new Section('title');
         $section->addFixture(['id' => '1', 'firstname' => 'Joe']);
@@ -49,7 +55,10 @@ class SectionTest extends TestCase
         $this->assertEqualsCanonicalizing($expectedHeaders, $section->getHeaders());
     }
 
-    public function testAddFixtureRaiseDuplicateFixtureException()
+    /**
+     * @throws DuplicateFixtureException
+     */
+    public function testAddFixtureRaiseDuplicateFixtureException(): void
     {
         $this->expectException(DuplicateFixtureException::class);
         $section = new Section('title');
