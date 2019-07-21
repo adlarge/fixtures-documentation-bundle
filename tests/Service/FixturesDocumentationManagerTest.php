@@ -80,6 +80,25 @@ class FixturesDocumentationManagerTest extends TestCase
         $this->assertTrue($this->root->hasChild('var/fixtures.documentation.json'));
     }
 
+     /**
+     * @throws DuplicateFixtureException
+     */
+    public function testInitDocumentation(): void
+    {
+        vfsStream::newDirectory('var')->at($this->root);
+        
+        file_put_contents(
+            $this->root->url() . '/var/fixtures.documentation.json',
+            '{}'
+        );
+        $documentationManager = new FixturesDocumentationManager(
+            $this->root->url(),
+            ['dummyCommand']
+        );
+
+        $this->assertInstanceOf(Documentation::class, $documentationManager->getDocumentation());
+    }
+
     /**
      * @throws DuplicateFixtureException
      */
