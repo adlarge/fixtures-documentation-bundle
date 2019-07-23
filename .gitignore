@@ -7,3 +7,4 @@
 # Tests
 tests/_output/
 tests/.phpunit.result.cache
+tests/clover.xml
