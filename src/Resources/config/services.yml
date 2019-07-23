@@ -14,6 +14,7 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
             $reloadCommands: '%adlarge_fixtures_documentation.reloadCommands%'
+            $configEntities: '%adlarge_fixtures_documentation.configEntities%'
 
     # Listeners
     Adlarge\FixturesDocumentationBundle\EventListener\FixturesDocumentationListener:
