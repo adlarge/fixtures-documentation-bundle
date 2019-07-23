@@ -15,4 +15,10 @@ cache:
 install:
     - composer install
 
-script: make test
+script:
+    - make test
+    - make coverage
+
+after_script:
+    - wget https://github.com/satooshi/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
+    - php php-coveralls.phar --verbose
