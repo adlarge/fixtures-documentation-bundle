@@ -33,6 +33,11 @@ class FixturesDocumentationExtension extends Extension
             $config['reloadCommands']
         );
 
+        $container->setParameter(
+            'adlarge_fixtures_documentation.configEntities',
+            $config['configEntities']
+        );
+
         $loader = new Loader\YamlFileLoader(
             $container,
             new FileLocator(__DIR__ . '/../Resources/config')

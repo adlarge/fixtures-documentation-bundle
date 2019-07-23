@@ -21,11 +21,17 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('title')
-                    ->defaultValue('Fixtures documentation')->end()
+                    ->defaultValue('Fixtures documentation')
+                ->end()
                 ->arrayNode('reloadCommands')
                     ->scalarPrototype()->end()
-            ->end()
-        ->end();
+                ->end()
+                ->arrayNode('configEntities')
+                    ->arrayPrototype()
+                        ->scalarPrototype()->end()
+                    ->end()
+                ->end()
+            ->end();
 
         return $treeBuilder;
     }

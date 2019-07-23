@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Adlarge\FixturesDocumentationBundle\Model;
 
 use Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 use TypeError;
+use function array_key_exists;
+
 
 class Documentation
 {
@@ -15,15 +18,19 @@ class Documentation
      * @var Section[]
      */
     private $sections = [];
-
+    /**
+     * @var array
+     */
+    private $configEntities;
     /**
      * Documentation constructor.
      *
      * @param string $jsonString
      * @throws DuplicateFixtureException
      */
-    public function __construct(string $jsonString = null)
+    public function __construct(array $configEntities, string $jsonString = null)
     {
+        $this->configEntities = $configEntities;
         if ($jsonString) {
             $this->init($jsonString);
         }
@@ -71,6 +78,24 @@ class Documentation
         $section = $this->addSection($sectionTitle);
         $section->addFixture($fixture);
 
+        return $this;
+    }
+
+    public function addFixtureEntity(object $entity): self
+    {
+        $className = (new \ReflectionClass($entity))->getShortName();
+        if (array_key_exists($className, $this->configEntities)) {
+            $propertyAccessor = PropertyAccess::createPropertyAccessor();
+            /** @var array $properties */
+            $properties = $this->configEntities[$className];
+            $fixture = [];
+            foreach ($properties as $property) {
+                $value = $propertyAccessor->getValue($entity, $property);
+                $fixture[$property] = $value;
+            }
+
+            $this->addFixture($className . 's', $fixture);
+        }
         return $this;
     }
 

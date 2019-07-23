@@ -25,6 +25,10 @@ class FixturesDocumentationManager
      */
     private $reloadCommands;
     /**
+     * @var array
+     */
+    private $configEntities;
+    /**
      * @var Documentation
      */
     private $documentation;
@@ -37,11 +41,12 @@ class FixturesDocumentationManager
      *
      * @throws DuplicateFixtureException
      */
-    public function __construct(string $projectDir, array $reloadCommands)
+    public function __construct(string $projectDir, array $reloadCommands, array $configEntities)
     {
         $this->projectDir = $projectDir;
         $this->jsonFilePath = $this->projectDir . '/var/' . self::FILE_NAME;
         $this->reloadCommands = $reloadCommands;
+        $this->configEntities = $configEntities;
 
         $this->initDocumentation();
     }
@@ -55,7 +60,7 @@ class FixturesDocumentationManager
         if ($this->jsonFilePath && is_file($this->jsonFilePath)) {
             $jsonString = file_get_contents($this->jsonFilePath);
         }
-        $this->documentation = new Documentation($jsonString);
+        $this->documentation = new Documentation($this->configEntities, $jsonString);
     }
     /**
      * Get current Documentation.
