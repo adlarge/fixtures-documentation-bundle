@@ -39,7 +39,8 @@ class FixturesDocumentationManagerTest extends TestCase
         vfsStream::newDirectory('var')->at($this->root);
         $documentationManager = new FixturesDocumentationManager(
             $this->root->url(),
-            ['dummyCommand']
+            ['dummyCommand'],
+            []
         );
 
         $this->assertInstanceOf(Documentation::class, $documentationManager->getDocumentation());
@@ -53,7 +54,8 @@ class FixturesDocumentationManagerTest extends TestCase
         vfsStream::newDirectory('var')->at($this->root);
         $documentationManager = new FixturesDocumentationManager(
             $this->root->url(),
-            ['dummyCommand']
+            ['dummyCommand'],
+            []
         );
 
         file_put_contents(
@@ -73,7 +75,8 @@ class FixturesDocumentationManagerTest extends TestCase
         vfsStream::newDirectory('var')->at($this->root);
         $documentationManager = new FixturesDocumentationManager(
             $this->root->url(),
-            ['dummyCommand']
+            ['dummyCommand'],
+            []
         );
 
         $documentationManager->save();
@@ -93,7 +96,8 @@ class FixturesDocumentationManagerTest extends TestCase
         );
         $documentationManager = new FixturesDocumentationManager(
             $this->root->url(),
-            ['dummyCommand']
+            ['dummyCommand'],
+            []
         );
 
         $this->assertInstanceOf(Documentation::class, $documentationManager->getDocumentation());
@@ -108,7 +112,8 @@ class FixturesDocumentationManagerTest extends TestCase
         
         $documentationManager = new FixturesDocumentationManager(
             $this->root->url(),
-            ['unknowCommand']
+            ['unknowCommand'],
+            []
         );
 
         $documentationManager->reload();
@@ -131,7 +136,8 @@ class FixturesDocumentationManagerTest extends TestCase
         
         $documentationManager = new FixturesDocumentationManager(
             $this->root->url(),
-            ['workingCommand']
+            ['workingCommand'],
+            []
         );
 
         $this->assertSame(1, $documentationManager->reload());
