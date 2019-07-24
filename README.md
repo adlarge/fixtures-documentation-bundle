@@ -22,6 +22,21 @@ The default url to access the documentation is **/fixtures/doc**
 
 ## Configuration
 
+Add the bundle to your `config/bundles.php` :
+
+    return [
+        // ...
+        Adlarge\FixturesDocumentationBundle\AdlargeFixturesDocumentationBundle::class => ['dev' => true],
+        // ...
+    ];
+
+Add the routing file `config/routes/dev/adlarge_fixtures_documentation.yaml` and paste the following content :
+
+    AdlargeFixturesDocumentation:
+        resource: '@AdlargeFixturesDocumentationBundle/Resources/config/routing.yml'
+
+You can define vars by creating the file `config/packages/dev/adlarge_fixtures_documentation.yaml` :
+
     adlarge_fixtures_documentation:
         title: 'Your title'
         reloadCommands:
