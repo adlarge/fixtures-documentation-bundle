@@ -81,6 +81,17 @@ class Documentation
         return $this;
     }
 
+    /**
+     * Add a fixture to the documentation when passing directly the entity.
+     * Use configEntites and their property to create the array of value
+     * to pass to addFixture method
+     *
+     * @param object $entity
+     *
+     * @return Documentation
+     *
+     * @throws DuplicateFixtureException
+     */
     public function addFixtureEntity(object $entity): self
     {
         $className = (new \ReflectionClass($entity))->getShortName();
@@ -91,10 +102,12 @@ class Documentation
             $fixture = [];
             foreach ($properties as $property) {
                 $value = $propertyAccessor->getValue($entity, $property);
-                $fixture[$property] = $value;
+                if (is_scalar($value)) {
+                    $fixture[$property] = $value;
+                }    
             }
 
-            $this->addFixture($className . 's', $fixture);
+            $this->addFixture($className, $fixture);
         }
         return $this;
     }
