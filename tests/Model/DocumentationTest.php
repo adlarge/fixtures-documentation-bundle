@@ -174,6 +174,35 @@ class DocumentationTest extends TestCase
     /**
      * @throws DuplicateFixtureException
      */
+    public function testAddFixtureEntityWithNonExistingProperty(): void
+    {
+        $mockDocumentation = Mockery::mock(
+            Documentation::class,
+            [
+                ['Product' => ['names', 'category']]
+            ]
+        )
+            ->makePartial();
+
+        $mockDocumentation->shouldReceive('addFixture')
+            ->once()
+            ->with('Product', [
+                'category' => 'category 1'
+            ])
+            ->andReturn($mockDocumentation);
+        
+        $product = (new Product())
+            ->setId(1)
+            ->setName('product 1')
+            ->setCategory('category 1');
+
+        $mockDocumentation->addFixtureEntity($product);
+        $this->assertCount(0, $mockDocumentation->getSections());
+    }
+
+    /**
+     * @throws DuplicateFixtureException
+     */
     public function testReset(): void
     {
         $documentation = new Documentation([]);

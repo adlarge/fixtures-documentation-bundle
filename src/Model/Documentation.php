@@ -6,6 +6,7 @@ namespace Adlarge\FixturesDocumentationBundle\Model;
 
 use Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use TypeError;
 use function array_key_exists;
 
@@ -101,10 +102,14 @@ class Documentation
             $properties = $this->configEntities[$className];
             $fixture = [];
             foreach ($properties as $property) {
-                $value = $propertyAccessor->getValue($entity, $property);
-                if (is_scalar($value)) {
-                    $fixture[$property] = $value;
-                }    
+                try {
+                    $value = $propertyAccessor->getValue($entity, $property);
+                    if (is_scalar($value)) {
+                        $fixture[$property] = $value;
+                    }  
+                } catch (NoSuchPropertyException $exception) {
+                    // ignore this exception silently
+                }
             }
 
             $this->addFixture($className, $fixture);
