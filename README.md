@@ -43,6 +43,10 @@ You can define vars by creating the file `config/packages/dev/adlarge_fixtures_d
             - php bin/console doctrine:fixtures:load
             - ....
 
+Then you can install assets :
+
+    php bin/console assets:install --symlink
+
 ## Example
 
 To add fixtures to your documentation you have to get the manager in your fixtures file :
