@@ -8,8 +8,9 @@ use Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use TypeError;
+use ReflectionClass;
+use ReflectionException;
 use function array_key_exists;
-
 
 class Documentation
 {
@@ -26,7 +27,9 @@ class Documentation
     /**
      * Documentation constructor.
      *
+     * @param array $configEntities
      * @param string $jsonString
+     * 
      * @throws DuplicateFixtureException
      */
     public function __construct(array $configEntities, string $jsonString = null)
@@ -87,15 +90,16 @@ class Documentation
      * Use configEntites and their property to create the array of value
      * to pass to addFixture method
      *
-     * @param object $entity
+     * @param mixed $entity
      *
      * @return Documentation
      *
      * @throws DuplicateFixtureException
+     * @throws ReflectionException
      */
-    public function addFixtureEntity(object $entity): self
+    public function addFixtureEntity($entity): self
     {
-        $className = (new \ReflectionClass($entity))->getShortName();
+        $className = (new ReflectionClass($entity))->getShortName();
         if (array_key_exists($className, $this->configEntities)) {
             $propertyAccessor = PropertyAccess::createPropertyAccessor();
             /** @var array $properties */
