@@ -69,21 +69,20 @@ class Documentation
      * Add a fixture to the documentation.
      *
      * @param string $sectionTitle
-     * @param array $fixture
+     * @param array  $fixture
      *
-     * @return Documentation
+     * @return Fixture
      *
      * @throws DuplicateFixtureException
      */
-    public function addFixture(string $sectionTitle, array $fixture): self
+    public function addFixture(string $sectionTitle, array $fixture): Fixture
     {
         if (count($fixture) !== count($fixture, COUNT_RECURSIVE)) {
             throw new TypeError('A fixture can\'t be a multidimensional array.');
         }
         $section = $this->addSection($sectionTitle);
-        $section->addFixture($fixture);
 
-        return $this;
+        return $section->addFixture($fixture);
     }
 
     /**
