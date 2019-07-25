@@ -111,7 +111,7 @@ class AppFixtures extends Fixture
 ### Adding fixtures with configuration and entity
 
 If you provided the good entity name and properties in configuration `entities` you can 
-use the method `addFIxtureEntity`.
+use the method `addFixtureEntity`.
 It only parse scalar properties and can check public properties as well as private ones with a getter (property, getProperty(), hasProperty(), isProperty()).
 It will ignore non scalar properties as well as non existing ones.
 
