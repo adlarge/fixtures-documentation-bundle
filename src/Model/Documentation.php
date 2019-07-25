@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Adlarge\FixturesDocumentationBundle\Model;
 
 use Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use TypeError;
@@ -110,7 +111,13 @@ class Documentation
                     $value = $propertyAccessor->getValue($entity, $property);
                     if (is_scalar($value)) {
                         $fixture[$property] = $value;
-                    }  
+                    } else if (is_array($value)) {
+                        $fixture[$property] = count($value);
+                    } else {
+                        if (method_exists($value, '__toString')) {
+                            $fixture[$property] = $value->__toString();
+                        }
+                    }
                 } catch (NoSuchPropertyException $exception) {
                     // ignore this exception silently
                 }

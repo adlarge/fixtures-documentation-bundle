@@ -24,6 +24,9 @@ class DocumentationTest extends TestCase
         $this->root = vfsStream::setup();
     }
 
+    /**
+     * @throws DuplicateFixtureException
+     */
     public function tearDown(): void
     {
         $documentation = new Documentation([]);
@@ -81,9 +84,6 @@ class DocumentationTest extends TestCase
         $documentation->addFixture('fixtures', ['id' => 1, 'array' => ['name' => 'fixture1', 'color' => 'red']]);
     }
 
-    /**
-     * @throws DuplicateFixtureException
-     */
     public function testAddFixtureEntity(): void
     {
         $mockDocumentation = Mockery::mock(
@@ -111,9 +111,6 @@ class DocumentationTest extends TestCase
         $this->assertCount(0, $mockDocumentation->getSections());
     }
 
-    /**
-     * @throws DuplicateFixtureException
-     */
     public function testAddFixtureEntityWithPublicProperties(): void
     {
         $mockDocumentation = Mockery::mock(
@@ -141,15 +138,15 @@ class DocumentationTest extends TestCase
         $this->assertCount(0, $mockDocumentation->getSections());
     }
 
-    /**
-     * @throws DuplicateFixtureException
-     */
     public function testAddFixtureEntityWithComplexProperties(): void
     {
         $mockDocumentation = Mockery::mock(
             Documentation::class,
             [
-                ['ProductComplex' => ['name', 'category', 'tags']]
+                [
+                    'ProductComplex' => ['name', 'category', 'tags', 'categories'],
+                    'Category' => ['id', 'name']
+                ]
             ]
         )
             ->makePartial();
@@ -157,14 +154,21 @@ class DocumentationTest extends TestCase
         $mockDocumentation->shouldReceive('addFixture')
             ->once()
             ->with('ProductComplex', [
-                'name' => 'product 1'
+                'name' => 'product 1',
+                'category' => 'category name',
+                'tags' => 3
             ])
             ->andReturn($mockDocumentation);
-        
+
+            $category = new Category();
+            $category->name = 'category name';
+            $category->visibility = true;
+
+
             $product = (new ProductComplex())
             ->setId(1)
             ->setName('product 1')
-            ->setCategory(new Category())
+            ->setCategory($category)
             ->setTags(['tag1', 'tag2', 'tag3']);
 
         $mockDocumentation->addFixtureEntity($product);
