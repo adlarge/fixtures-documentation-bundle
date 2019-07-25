@@ -42,6 +42,14 @@ You can define vars by creating the file `config/packages/dev/adlarge_fixtures_d
         reloadCommands:
             - php bin/console doctrine:fixtures:load
             - ....
+        entities:
+            Product:
+                - id
+                - name
+                - category
+            Customer:
+                - firstname
+                - lastname
 
 Then you can install assets :
 
@@ -50,6 +58,8 @@ Then you can install assets :
 ## Example
 
 To add fixtures to your documentation you have to get the manager in your fixtures file :
+
+### Adding fixtures manually
 
 ```php
 class AppFixtures extends Fixture
@@ -94,6 +104,83 @@ class AppFixtures extends Fixture
          ]);
  
          $manager->flush();
+     }
+ }
+```
+
+### Adding fixtures with configuration and entity
+
+If you provided the good entity name and properties in configuration `entities` you can 
+use the method `addFixtureEntity`.
+It only parse scalar properties and can check public properties as well as private ones with a getter (property, getProperty(), hasProperty(), isProperty()).
+It will ignore non scalar properties as well as non existing ones.
+
+With the following configuration :
+
+```yaml
+    adlarge_fixtures_documentation:
+        title: 'Your title'
+        reloadCommands:
+            - php bin/console doctrine:fixtures:load
+        entities:
+            Product:
+                - name
+                - category
+            Customer:
+                - firstname
+                - lastname
+                - email
+```
+
+You can use 
+
+```php
+class AppFixtures extends Fixture
+ {
+     /**
+      * @var FixturesDocumentationManager
+      */
+     private $documentationManager;
+ 
+     /**
+      * AppFixtures constructor.
+      *
+      * @param FixturesDocumentationManager $documentationManager
+      */
+     public function __construct(FixturesDocumentationManager $documentationManager)
+     {
+         $this->documentationManager = $documentationManager;
+     }
+ 
+     /**
+      * @param ObjectManager $manager
+      *
+      * @throws DuplicateFixtureException
+      */
+     public function load(ObjectManager $manager)
+     {
+        $doc = $this->documentationManager->getDocumentation();
+ 
+        $product = (new Product())
+            ->setName("Product 1")
+            ->setCategory("Category 1");
+
+        $doc->addFixtureEntity($product);
+
+        $product = (new Product())
+            ->setName("Product 2")
+            ->setCategory("Category 2");
+
+        $doc->addFixtureEntity($product);
+
+        $customer = (new Customer())
+            ->setFirstname('John')
+            ->setLastname('Doe')
+            ->setEmail('john.doe@test.fr');
+
+        $doc->addFixtureEntity($customer);
+ 
+        $manager->flush();
      }
  }
 ```

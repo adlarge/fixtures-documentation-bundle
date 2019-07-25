@@ -5,7 +5,12 @@ declare(strict_types=1);
 namespace Adlarge\FixturesDocumentationBundle\Model;
 
 use Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use TypeError;
+use ReflectionClass;
+use ReflectionException;
+use function array_key_exists;
 
 class Documentation
 {
@@ -15,15 +20,21 @@ class Documentation
      * @var Section[]
      */
     private $sections = [];
-
+    /**
+     * @var array
+     */
+    private $configEntities;
     /**
      * Documentation constructor.
      *
+     * @param array $configEntities
      * @param string $jsonString
+     * 
      * @throws DuplicateFixtureException
      */
-    public function __construct(string $jsonString = null)
+    public function __construct(array $configEntities, string $jsonString = null)
     {
+        $this->configEntities = $configEntities;
         if ($jsonString) {
             $this->init($jsonString);
         }
@@ -71,6 +82,42 @@ class Documentation
         $section = $this->addSection($sectionTitle);
         $section->addFixture($fixture);
 
+        return $this;
+    }
+
+    /**
+     * Add a fixture to the documentation when passing directly the entity.
+     * Use configEntites and their property to create the array of value
+     * to pass to addFixture method
+     *
+     * @param mixed $entity
+     *
+     * @return Documentation
+     *
+     * @throws DuplicateFixtureException
+     * @throws ReflectionException
+     */
+    public function addFixtureEntity($entity): self
+    {
+        $className = (new ReflectionClass($entity))->getShortName();
+        if (array_key_exists($className, $this->configEntities)) {
+            $propertyAccessor = PropertyAccess::createPropertyAccessor();
+            /** @var array $properties */
+            $properties = $this->configEntities[$className];
+            $fixture = [];
+            foreach ($properties as $property) {
+                try {
+                    $value = $propertyAccessor->getValue($entity, $property);
+                    if (is_scalar($value)) {
+                        $fixture[$property] = $value;
+                    }  
+                } catch (NoSuchPropertyException $exception) {
+                    // ignore this exception silently
+                }
+            }
+
+            $this->addFixture($className, $fixture);
+        }
         return $this;
     }
 
