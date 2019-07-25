@@ -112,8 +112,9 @@ class AppFixtures extends Fixture
 
 If you provided the good entity name and properties in configuration `entities` you can 
 use the method `addFixtureEntity`.
-It only parse scalar properties and can check public properties as well as private ones with a getter (property, getProperty(), hasProperty(), isProperty()).
-It will ignore non scalar properties as well as non existing ones.
+It will parse scalar properties and can check public properties as well as private ones with a getter (property, getProperty(), hasProperty(), isProperty()).
+It will parse non scalar properties as well, if it's an array it will display the count, if it's an entity it will display the result of __toString if it exists.
+It will ignore non existing properties.
 
 With the following configuration :
 
@@ -126,6 +127,7 @@ With the following configuration :
             Product:
                 - name
                 - category
+                - owner
             Customer:
                 - firstname
                 - lastname
@@ -184,6 +186,8 @@ class AppFixtures extends Fixture
      }
  }
 ```
+
+NB: if the property owner is not scalar it will use the method __toString() if it exists
 
 Then to generate the doc you only have to run : 
 
