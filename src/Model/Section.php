@@ -16,7 +16,7 @@ class Section
     /**
      * Section fixtures list.
      *
-     * @var array
+     * @var Fixture[]|array
      */
     private $fixtures = [];
     /**
@@ -45,7 +45,7 @@ class Section
     }
 
     /**
-     * @return array
+     * @return Fixture[]|array
      */
     public function getFixtures(): array
     {
@@ -77,11 +77,11 @@ class Section
      *
      * @param array $newFixture
      *
-     * @return Section
+     * @return Fixture
      *
      * @throws DuplicateFixtureException
      */
-    public function addFixture(array $newFixture): self
+    public function addFixture(array $newFixture): Fixture
     {
         foreach ($this->fixtures as $fixture) {
             if (empty(array_diff_assoc($fixture, $newFixture))) {
@@ -92,10 +92,12 @@ class Section
             }
         }
 
-        $this->fixtures[] = $newFixture;
+        $fixture = new Fixture($this->getNextFixtureId(), $newFixture);
+
+        $this->fixtures[] = $fixture;
         $this->updateHeaders($newFixture);
 
-        return $this;
+        return $fixture;
     }
 
     /**
@@ -109,5 +111,17 @@ class Section
             $this->headers,
             array_keys($newFixture))
         );
+    }
+
+    /**
+     * Generate next section fixture ID.
+     *
+     * @return string
+     */
+    private function getNextFixtureId(): string
+    {
+        $fixtureNumber = count($this->fixtures) + 1;
+
+       return "{$this->getTitle()}-{$fixtureNumber}";
     }
 }
