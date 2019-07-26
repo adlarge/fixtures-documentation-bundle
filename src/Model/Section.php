@@ -84,7 +84,7 @@ class Section
     public function addFixture(array $newFixture): Fixture
     {
         foreach ($this->fixtures as $fixture) {
-            if (empty(array_diff_assoc($fixture, $newFixture))) {
+            if (empty(array_diff_assoc($fixture->getData(), $newFixture))) {
                 $values = implode(',', $newFixture);
                 throw new DuplicateFixtureException(
                     "Duplicate fixture in section {$this->title} : {$values}"

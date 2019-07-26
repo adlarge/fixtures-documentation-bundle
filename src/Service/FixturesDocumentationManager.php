@@ -43,6 +43,7 @@ class FixturesDocumentationManager
      *
      * @param string $projectDir
      * @param array  $reloadCommands
+     * @param array  $configEntities
      *
      * @throws DuplicateFixtureException
      */
