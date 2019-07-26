@@ -150,7 +150,11 @@ class Documentation
 
         foreach ($this->getSections() as $section) {
             foreach ($section->getFixtures() as $fixture) {
-                $doc[$section->getTitle()]['fixtures'][] = $fixture;
+                $doc[$section->getTitle()]['fixtures'][] = [
+                    'id' => $fixture->getId(),
+                    'data' => $fixture->getData(),
+                    'links' => $fixture->getLinks(),
+                ];
             }
         }
 
