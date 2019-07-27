@@ -112,7 +112,7 @@ class FixturesDocumentationManagerTest extends TestCase
         
         $documentationManager = new FixturesDocumentationManager(
             $this->root->url(),
-            ['unknowCommand'],
+            ['knownCommand'],
             []
         );
 
@@ -136,7 +136,7 @@ class FixturesDocumentationManagerTest extends TestCase
         
         $documentationManager = new FixturesDocumentationManager(
             $this->root->url(),
-            ['workingCommand'],
+            ['workingCommand with args', 'workingCommand2 with other args'],
             []
         );
 

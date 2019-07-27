@@ -101,13 +101,16 @@ class FixturesDocumentationManager
      */
     public function reload(): int
     {
-        // TODO: refacto the use of new Process to new Process(['command'])
-        $process = new Process(implode(' && ', $this->reloadCommands));
-        $process->setWorkingDirectory($this->projectDir);
-        $exitCode = $process->run();
+        $exitCode = 0;
 
-        if (!$process->isSuccessful()) {
-            throw new RuntimeException($process->getErrorOutput());
+        foreach ($this->reloadCommands as $command) {
+            $process = new Process(explode(' ', $command));
+            $process->setWorkingDirectory($this->projectDir);
+            $exitCode = $process->run();
+
+            if (!$process->isSuccessful()) {
+                throw new RuntimeException($process->getErrorOutput());
+            }
         }
 
         return $exitCode;
