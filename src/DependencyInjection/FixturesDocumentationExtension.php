@@ -28,6 +28,12 @@ class FixturesDocumentationExtension extends Extension
             'adlarge_fixtures_documentation.title',
             $config['title']
         );
+
+        $container->setParameter(
+            'adlarge_fixtures_documentation.listenedCommand',
+            $config['listenedCommand']
+        );
+
         $container->setParameter(
             'adlarge_fixtures_documentation.reloadCommands',
             $config['reloadCommands']
