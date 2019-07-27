@@ -64,6 +64,18 @@ class Fixture
     }
 
     /**
+     * @param array|null $links
+     *
+     * @return Fixture
+     */
+    public function setLinks(?array $links): self
+    {
+        $this->links = $links;
+
+        return $this;
+    }
+
+    /**
      * Add a link to an other Fixture.
      *
      * @param string $field
