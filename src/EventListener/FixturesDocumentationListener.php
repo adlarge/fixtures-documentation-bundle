@@ -18,14 +18,22 @@ class FixturesDocumentationListener
     private $fixturesDocumentationManager;
 
     /**
+     * @var string $listenedCommand
+     */
+    private $listenedCommand;
+
+    /**
      * FixturesDocumentationListener constructor.
      *
      * @param FixturesDocumentationManager $fixturesDocumentationManager
+     * @param string $listenedCommand
      */
     public function __construct(
-        FixturesDocumentationManager $fixturesDocumentationManager
+        FixturesDocumentationManager $fixturesDocumentationManager,
+        string $listenedCommand
     ) {
         $this->fixturesDocumentationManager = $fixturesDocumentationManager;
+        $this->listenedCommand = $listenedCommand;
     }
 
     /**
@@ -35,8 +43,7 @@ class FixturesDocumentationListener
      */
     public function onCommandExecution(ConsoleCommandEvent $event): void
     {
-        //TODO: use configuration to detect the command
-        if ($event->getCommand() && $event->getCommand()->getName() === 'doctrine:fixtures:load') {
+        if ($event->getCommand() && $event->getCommand()->getName() === $this->listenedCommand) {
             $this->fixturesDocumentationManager->reset();
         }
     }
@@ -48,8 +55,7 @@ class FixturesDocumentationListener
      */
     public function onTerminateExecution(ConsoleTerminateEvent $event): void
     {
-        //TODO: use configuration to detect the command
-        if ($event->getCommand() && $event->getCommand()->getName() === 'doctrine:fixtures:load') {
+        if ($event->getCommand() && $event->getCommand()->getName() === $this->listenedCommand) {
             $this->fixturesDocumentationManager->save();
         }
     }
