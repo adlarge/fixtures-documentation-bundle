@@ -61,7 +61,8 @@ class Documentation
         $doc = json_decode($jsonString, true);
         foreach ($doc as $sectionTitle => $section) {
             foreach ($section['fixtures'] as $item) {
-                $this->addFixture($sectionTitle, $item);
+                $this->addFixture($sectionTitle, $item['data'])
+                    ->setLinks($item['links']);
             }
         }
     }
@@ -96,17 +97,17 @@ class Documentation
 
     /**
      * Add a fixture to the documentation when passing directly the entity.
-     * Use configEntites and their property to create the array of value
+     * Use configEntities and their property to create the array of value
      * to pass to addFixture method
      *
      * @param mixed $entity
      *
-     * @return Documentation
+     * @return Fixture|null
      *
      * @throws DuplicateFixtureException
      * @throws ReflectionException
      */
-    public function addFixtureEntity($entity): self
+    public function addFixtureEntity($entity): ?Fixture
     {
         $className = (new ReflectionClass($entity))->getShortName();
         if (array_key_exists($className, $this->configEntities)) {
@@ -131,9 +132,10 @@ class Documentation
                 }
             }
 
-            $this->addFixture($className, $fixture);
+            return $this->addFixture($className, $fixture);
         }
-        return $this;
+
+        return null;
     }
 
     /**
