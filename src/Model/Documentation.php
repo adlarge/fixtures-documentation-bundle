@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Adlarge\FixturesDocumentationBundle\Model;
 
+use Adlarge\FixturesDocumentationBundle\Exception\BadFixtureLinkException;
+use Adlarge\FixturesDocumentationBundle\Exception\BadLinkReferenceException;
 use Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -25,6 +27,13 @@ class Documentation
      * @var array
      */
     private $configEntities;
+    /**
+     * List of linkable Fixtures.
+     *
+     * @var array
+     */
+    private $linkReferences = [];
+
     /**
      * Documentation constructor.
      *
@@ -180,5 +189,40 @@ class Documentation
         $this->sections[] = $section;
 
         return $section;
+    }
+
+    /**
+     * Add a linkable fixture reference.
+     *
+     * @param string  $refName
+     * @param Fixture $fixture
+     *
+     * @return Documentation
+     */
+    public function addLinkReference(string $refName, Fixture $fixture): self
+    {
+        $this->linkReferences[$refName] = $fixture;
+
+        return $this;
+    }
+
+    /**
+     * Get a fixture with the reference.
+     *
+     * @param string $refName
+     *
+     * @return Fixture
+     *
+     * @throws BadLinkReferenceException
+     */
+    public function getLinkReference(string $refName): Fixture
+    {
+        if (!isset($this->linkReferences[$refName])) {
+            throw new BadLinkReferenceException(
+                "No reference found for {$refName}"
+            );
+        }
+
+        return $this->linkReferences[$refName];
     }
 }
