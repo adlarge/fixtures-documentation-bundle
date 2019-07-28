@@ -43,7 +43,7 @@ class DoctrineListenerTest extends TestCase
             ->once()
             ->andReturn(1);
 
-        $listener = new DoctrineListener($mockService);
+        $listener = new DoctrineListener($mockService, true);
 
         $listener->postPersist($mockEvent);
     }
@@ -69,7 +69,33 @@ class DoctrineListenerTest extends TestCase
         $mockEvent->shouldReceive('getObject')
             ->never();
 
-        $listener = new DoctrineListener($mockService);
+        $listener = new DoctrineListener($mockService, true);
+
+        $listener->postPersist($mockEvent);
+    }
+
+    /**
+     * @throws DuplicateFixtureException
+     * @throws ReflectionException
+     */
+    public function testCallIfIsntEnabled(): void
+    {
+        $mockDocumentation = Mockery::mock(Documentation::class);
+        $mockDocumentation->shouldReceive('addFixtureEntity')
+            ->never();
+
+        $mockService = Mockery::mock(FixturesDocumentationManager::class);
+        $mockService->shouldReceive('getDocumentation')
+            ->never();
+        $mockService->shouldReceive('isListening')
+            ->once()
+            ->andReturn(true);
+
+        $mockEvent = Mockery::mock(LifecycleEventArgs::class);
+        $mockEvent->shouldReceive('getObject')
+            ->never();
+
+        $listener = new DoctrineListener($mockService, false);
 
         $listener->postPersist($mockEvent);
     }

@@ -13,9 +13,13 @@ class DoctrineListener
     /** @var FixturesDocumentationManager $documentationManager */
     private $documentationManager;
 
-    public function __construct(FixturesDocumentationManager $documentationManager)
+    /** @var bool $enableAutoDocumentation */
+    private $enableAutoDocumentation;
+
+    public function __construct(FixturesDocumentationManager $documentationManager, bool $enableAutoDocumentation)
     {
         $this->documentationManager = $documentationManager;
+        $this->enableAutoDocumentation = $enableAutoDocumentation;
     }
 
     /**
@@ -25,7 +29,7 @@ class DoctrineListener
      */
     public function postPersist(LifecycleEventArgs $args)
     {
-        if ($this->documentationManager->isListening()) {
+        if ($this->documentationManager->isListening() && $this->enableAutoDocumentation) {
             $entity = $args->getObject();
             $this->documentationManager->getDocumentation()->addFixtureEntity($entity);
         }

@@ -29,6 +29,7 @@ services:
     Adlarge\FixturesDocumentationBundle\EventListener\DoctrineListener:
         public: true
         arguments:
-            - '@Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager'
+            $documentationManager: '@Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager'
+            $enableAutoDocumentation: '%adlarge_fixtures_documentation.enableAutoDocumentation%'
         tags:
             - { name: doctrine.event_listener, event: postPersist}
