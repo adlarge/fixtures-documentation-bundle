@@ -42,6 +42,7 @@ You can define vars by creating the file `config/packages/dev/adlarge_fixtures_d
         reloadCommands:
             - php bin/console doctrine:fixtures:load
             - ....
+        listenedCommand: 'php bin/console doctrine:fixtures:load'
         entities:
             Product:
                 - id
@@ -50,6 +51,11 @@ You can define vars by creating the file `config/packages/dev/adlarge_fixtures_d
             Customer:
                 - firstname
                 - lastname
+
+* title has a default value 'Fixtures documentation'
+* listenedCommand has a default value 'php bin/console doctrine:fixtures:load'
+* reloadCommand is an optional array of commands you want to run from the view. If present a button to run these command will be visible in this view
+* entities is an optional array of configurations for your entities you want to auto-document
 
 Then you can install assets :
 
