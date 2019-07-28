@@ -43,7 +43,8 @@ class FixturesDocumentationListener
      */
     public function onCommandExecution(ConsoleCommandEvent $event): void
     {
-        if ($event->getCommand() && $event->getCommand()->getName() === $this->listenedCommand) {
+        if ($event->getCommand() && $event->getCommand()->getName() === 'doctrine:fixtures:load') {
+            $this->fixturesDocumentationManager->startListening();
             $this->fixturesDocumentationManager->reset();
         }
     }
@@ -56,6 +57,7 @@ class FixturesDocumentationListener
     public function onTerminateExecution(ConsoleTerminateEvent $event): void
     {
         if ($event->getCommand() && $event->getCommand()->getName() === $this->listenedCommand) {
+            $this->fixturesDocumentationManager->stopListening();
             $this->fixturesDocumentationManager->save();
         }
     }
