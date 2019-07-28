@@ -25,9 +25,9 @@ class DoctrineListener
      */
     public function postPersist(LifecycleEventArgs $args)
     {
-        $entity = $args->getObject();
-
-        $this->documentationManager->getDocumentation()->addFixtureEntity($entity);
-
+        if ($this->documentationManager->isListening()) {
+            $entity = $args->getObject();
+            $this->documentationManager->getDocumentation()->addFixtureEntity($entity);
+        }
     }
 }

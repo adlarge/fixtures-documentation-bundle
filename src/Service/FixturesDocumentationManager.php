@@ -34,6 +34,11 @@ class FixturesDocumentationManager
     private $documentation;
 
     /**
+     * @var bool
+     */
+    private $isListening = false;
+
+    /**
      * FixturesDocumentationManager constructor.
      *
      * @param string $projectDir
@@ -98,6 +103,7 @@ class FixturesDocumentationManager
 
     /**
      * Reload database and fixtures.
+     * @return int
      */
     public function reload(): int
     {
@@ -114,5 +120,31 @@ class FixturesDocumentationManager
         }
 
         return $exitCode;
+    }
+
+    /**
+     * @return FixturesDocumentationManager
+     */
+    public function startListening(): self
+    {
+        $this->isListening = true;
+        return $this;
+    }
+
+    /**
+     * @return FixturesDocumentationManager
+     */
+    public function stopListening(): self
+    {
+        $this->isListening = false;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isListening(): bool
+    {
+        return $this->isListening;
     }
 }
