@@ -25,3 +25,11 @@ services:
         tags:
             - { name: kernel.event_listener, event: console.command, method: onCommandExecution }
             - { name: kernel.event_listener, event: console.terminate, method: onTerminateExecution }
+
+    Adlarge\FixturesDocumentationBundle\EventListener\DoctrineListener:
+        public: true
+        arguments:
+            $documentationManager: '@Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager'
+            $enableAutoDocumentation: '%adlarge_fixtures_documentation.enableAutoDocumentation%'
+        tags:
+            - { name: doctrine.event_listener, event: postPersist}

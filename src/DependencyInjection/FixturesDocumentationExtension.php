@@ -35,6 +35,11 @@ class FixturesDocumentationExtension extends Extension
         );
 
         $container->setParameter(
+            'adlarge_fixtures_documentation.enableAutoDocumentation',
+            $config['enableAutoDocumentation']
+        );
+
+        $container->setParameter(
             'adlarge_fixtures_documentation.reloadCommands',
             $config['reloadCommands']
         );

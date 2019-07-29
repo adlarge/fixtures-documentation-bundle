@@ -142,4 +142,51 @@ class FixturesDocumentationManagerTest extends TestCase
 
         $this->assertSame(1, $documentationManager->reload());
     }
+
+    /**
+     * @throws DuplicateFixtureException
+     */
+    public function testIsListeningByDefault(): void
+    {
+        $documentationManager = new FixturesDocumentationManager(
+            '',
+            ['dummyCommand'],
+            []
+        );
+
+        $this->assertFalse($documentationManager->isListening());
+    }
+
+    /**
+     * @throws DuplicateFixtureException
+     */
+    public function testIsListeningStart(): void
+    {
+        $documentationManager = new FixturesDocumentationManager(
+            '',
+            ['dummyCommand'],
+            []
+        );
+
+        $documentationManager->startListening();
+
+        $this->assertTrue($documentationManager->isListening());
+    }
+
+    /**
+     * @throws DuplicateFixtureException
+     */
+    public function testIsListeningStartAndStop(): void
+    {
+        $documentationManager = new FixturesDocumentationManager(
+            '',
+            ['dummyCommand'],
+            []
+        );
+
+        $documentationManager->startListening();
+        $documentationManager->stopListening();
+
+        $this->assertFalse($documentationManager->isListening());
+    }
 }
