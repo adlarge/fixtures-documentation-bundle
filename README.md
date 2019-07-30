@@ -73,25 +73,25 @@ To add fixtures to your documentation you have to get the manager in your fixtur
 class AppFixtures extends Fixture
 {
     /**
-    * @var FixturesDocumentationManager
-    */
+     * @var FixturesDocumentationManager
+     */
     private $documentationManager;
 
     /**
-    * AppFixtures constructor.
-    *
-    * @param FixturesDocumentationManager $documentationManager
-    */
+     * AppFixtures constructor.
+     *
+     * @param FixturesDocumentationManager $documentationManager
+     */
     public function __construct(FixturesDocumentationManager $documentationManager)
     {
         $this->documentationManager = $documentationManager;
     }
 
     /**
-    * @param ObjectManager $manager
-    *
-    * @throws DuplicateFixtureException
-    */
+     * @param ObjectManager $manager
+     *
+     * @throws DuplicateFixtureException
+     */
     public function load(ObjectManager $manager)
     {
         $doc = $this->documentationManager->getDocumentation();
@@ -148,25 +148,25 @@ You can use
 class AppFixtures extends Fixture
 {
     /**
-    * @var FixturesDocumentationManager
-    */
+     * @var FixturesDocumentationManager
+     */
     private $documentationManager;
 
     /**
-    * AppFixtures constructor.
-    *
-    * @param FixturesDocumentationManager $documentationManager
-    */
+     * AppFixtures constructor.
+     *
+     * @param FixturesDocumentationManager $documentationManager
+     */
     public function __construct(FixturesDocumentationManager $documentationManager)
     {
         $this->documentationManager = $documentationManager;
     }
 
     /**
-    * @param ObjectManager $manager
-    *
-    * @throws DuplicateFixtureException
-    */
+     * @param ObjectManager $manager
+     *
+     * @throws DuplicateFixtureException
+     */
     public function load(ObjectManager $manager)
     {
         $doc = $this->documentationManager->getDocumentation();
@@ -205,25 +205,25 @@ It's possible to link fixtures between them, for example, if we have a list of c
 class AppFixtures extends Fixture
 {
     /**
-    * @var FixturesDocumentationManager
-    */
+     * @var FixturesDocumentationManager
+     */
     private $documentationManager;
 
     /**
-    * AppFixtures constructor.
-    *
-    * @param FixturesDocumentationManager $documentationManager
-    */
+     * AppFixtures constructor.
+     *
+     * @param FixturesDocumentationManager $documentationManager
+     */
     public function __construct(FixturesDocumentationManager $documentationManager)
     {
         $this->documentationManager = $documentationManager;
     }
 
     /**
-    * @param ObjectManager $manager
-    *
-    * @throws DuplicateFixtureException
-    */
+     * @param ObjectManager $manager
+     *
+     * @throws DuplicateFixtureException
+     */
     public function load(ObjectManager $manager)
     {
         $doc = $this->documentationManager->getDocumentation();        
