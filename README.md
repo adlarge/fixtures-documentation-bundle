@@ -71,49 +71,49 @@ To add fixtures to your documentation you have to get the manager in your fixtur
 
 ```php
 class AppFixtures extends Fixture
- {
-     /**
-      * @var FixturesDocumentationManager
-      */
-     private $documentationManager;
- 
-     /**
-      * AppFixtures constructor.
-      *
-      * @param FixturesDocumentationManager $documentationManager
-      */
-     public function __construct(FixturesDocumentationManager $documentationManager)
-     {
-         $this->documentationManager = $documentationManager;
-     }
- 
-     /**
-      * @param ObjectManager $manager
-      *
-      * @throws DuplicateFixtureException
-      */
-     public function load(ObjectManager $manager)
-     {
-         $doc = $this->documentationManager->getDocumentation();
- 
-         $doc->addFixture('Products', [
-             'id' => 1,
-             'name' => 'Product 1',
-         ]);
-         $doc->addFixture('Products', [
-             'id' => 2,
-             'name' => 'Product 2',
-         ]);
-         $doc->addFixture('Customers', [
-             'id' => 1,
-             'first name' => 'John',
-             'last name' => 'Doe',
-             'email' => 'john.doe@test.fr'
-         ]);
- 
-         $manager->flush();
-     }
- }
+{
+    /**
+    * @var FixturesDocumentationManager
+    */
+    private $documentationManager;
+
+    /**
+    * AppFixtures constructor.
+    *
+    * @param FixturesDocumentationManager $documentationManager
+    */
+    public function __construct(FixturesDocumentationManager $documentationManager)
+    {
+        $this->documentationManager = $documentationManager;
+    }
+
+    /**
+    * @param ObjectManager $manager
+    *
+    * @throws DuplicateFixtureException
+    */
+    public function load(ObjectManager $manager)
+    {
+        $doc = $this->documentationManager->getDocumentation();
+
+        $doc->addFixture('Products', [
+            'id' => 1,
+            'name' => 'Product 1',
+        ]);
+        $doc->addFixture('Products', [
+            'id' => 2,
+            'name' => 'Product 2',
+        ]);
+        $doc->addFixture('Customers', [
+            'id' => 1,
+            'first name' => 'John',
+            'last name' => 'Doe',
+            'email' => 'john.doe@test.fr'
+        ]);
+
+        $manager->flush();
+    }
+}
 ```
 
 ### Adding fixtures with configuration and entity
@@ -146,60 +146,118 @@ You can use
 
 ```php
 class AppFixtures extends Fixture
- {
-     /**
-      * @var FixturesDocumentationManager
-      */
-     private $documentationManager;
- 
-     /**
-      * AppFixtures constructor.
-      *
-      * @param FixturesDocumentationManager $documentationManager
-      */
-     public function __construct(FixturesDocumentationManager $documentationManager)
-     {
-         $this->documentationManager = $documentationManager;
-     }
- 
-     /**
-      * @param ObjectManager $manager
-      *
-      * @throws DuplicateFixtureException
-      */
-     public function load(ObjectManager $manager)
-     {
+{
+    /**
+    * @var FixturesDocumentationManager
+    */
+    private $documentationManager;
+
+    /**
+    * AppFixtures constructor.
+    *
+    * @param FixturesDocumentationManager $documentationManager
+    */
+    public function __construct(FixturesDocumentationManager $documentationManager)
+    {
+        $this->documentationManager = $documentationManager;
+    }
+
+    /**
+    * @param ObjectManager $manager
+    *
+    * @throws DuplicateFixtureException
+    */
+    public function load(ObjectManager $manager)
+    {
         $doc = $this->documentationManager->getDocumentation();
- 
+
         $product = (new Product())
             ->setName("Product 1")
             ->setCategory("Category 1");
-
+        
         $doc->addFixtureEntity($product);
 
         $product = (new Product())
             ->setName("Product 2")
             ->setCategory("Category 2");
-
+        
         $doc->addFixtureEntity($product);
 
         $customer = (new Customer())
             ->setFirstname('John')
             ->setLastname('Doe')
             ->setEmail('john.doe@test.fr');
-
+        
         $doc->addFixtureEntity($customer);
- 
+
         $manager->flush();
-     }
- }
+    }
+}
 ```
 
 NB: if the property owner is not scalar it will use the method __toString() if it exists
 
-Then to generate the doc you only have to run : 
+### Link fixtures
 
-    php bin/console doctrine:fixtures:load
+It's possible to link fixtures between them, for example, if we have a list of comments with an author field that represent a user, we can link fixtures like this :
+
+```php
+class AppFixtures extends Fixture
+{
+    /**
+    * @var FixturesDocumentationManager
+    */
+    private $documentationManager;
+
+    /**
+    * AppFixtures constructor.
+    *
+    * @param FixturesDocumentationManager $documentationManager
+    */
+    public function __construct(FixturesDocumentationManager $documentationManager)
+    {
+        $this->documentationManager = $documentationManager;
+    }
+
+    /**
+    * @param ObjectManager $manager
+    *
+    * @throws DuplicateFixtureException
+    */
+    public function load(ObjectManager $manager)
+    {
+        $doc = $this->documentationManager->getDocumentation();        
+
+        $userFixture = $doc->addFixture('Users', [
+            'id' => 1,
+            'first name' => 'John',
+            'last name' => 'Doe',
+            'email' => 'john.doe@test.fr'
+        ]);        
+        $doc->addFixture('Comments', [
+            'id' => 1,
+            'text' => 'My comment',
+            'author' => 'John Doe',
+        ])
+            ->addLink('author', $userFixture);            
+
+        $manager->flush();
+    }
+}
+``` 
+
+The `addLink` method needs the field on which we want to create the link and the Fixture we want to link to.
+
+### Sharing fixtures
+
+It's possible to share fixtures between files. For this two methods are available on the Documentation object :
+
+* addLinkReference('ref', $fixture)
+* getLinkReference('ref')
+
+## Generate documentation
+
+To generate the doc you only have to run `php bin/console doctrine:fixtures:load` or the command you've configured.
 
 ## Result
 
