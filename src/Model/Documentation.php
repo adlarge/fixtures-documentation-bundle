@@ -61,7 +61,8 @@ class Documentation
         $doc = json_decode($jsonString, true);
         foreach ($doc as $sectionTitle => $section) {
             foreach ($section['fixtures'] as $item) {
-                $this->addFixture($sectionTitle, $item['data'])
+                $fixture = new Fixture($item['id'], $item['data']);
+                $this->addFixture($sectionTitle, $fixture->getId(), $fixture->getData())
                     ->setLinks($item['links']);
             }
         }
@@ -79,20 +80,23 @@ class Documentation
      * Add a fixture to the documentation.
      *
      * @param string $sectionTitle
+     * @param string $id
      * @param array  $fixture
      *
      * @return Fixture
      *
      * @throws DuplicateFixtureException
      */
-    public function addFixture(string $sectionTitle, array $fixture): Fixture
+    public function addFixture(string $sectionTitle, string $id, array $fixtureData): Fixture
     {
-        if (count($fixture) !== count($fixture, COUNT_RECURSIVE)) {
+        if (count($fixtureData) !== count($fixtureData, COUNT_RECURSIVE)) {
             throw new TypeError('A fixture can\'t be a multidimensional array.');
         }
         $section = $this->addSection($sectionTitle);
 
-        return $section->addFixture($fixture);
+        $fixture = new Fixture($id, $fixtureData);
+        $section->addFixture($fixture);
+        return $fixture;
     }
 
     /**
@@ -110,21 +114,28 @@ class Documentation
     public function addFixtureEntity($entity): ?Fixture
     {
         $className = (new ReflectionClass($entity))->getShortName();
+        $links = [];
         if (array_key_exists($className, $this->configEntities)) {
             $propertyAccessor = PropertyAccess::createPropertyAccessor();
             /** @var array $properties */
             $properties = $this->configEntities[$className];
-            $fixture = [];
+            $fixtureData = [];
             foreach ($properties as $property) {
                 try {
                     $value = $propertyAccessor->getValue($entity, $property);
                     if (is_scalar($value)) {
-                        $fixture[$property] = $value;
+                        $fixtureData[$property] = $value;
                     } else if (is_array($value)) {
-                        $fixture[$property] = count($value);
+                        $fixtureData[$property] = count($value);
                     } else {
+                        // We are in an object context
                         if (method_exists($value, '__toString')) {
-                            $fixture[$property] = $value->__toString();
+                            $fixtureData[$property] = $value->__toString();
+                            $propertyClassName = (new ReflectionClass($value))->getShortName();
+                            // Means that the object is one of the wanted class to be documented
+                            if (array_key_exists($propertyClassName, $this->configEntities)) {
+                                $links[$property] = $this->getObjectid($value);
+                            }
                         }
                     }
                 } catch (NoSuchPropertyException $exception) {
@@ -132,10 +143,32 @@ class Documentation
                 }
             }
 
-            return $this->addFixture($className, $fixture);
-        }
+            try {
+                $entityId = $propertyAccessor->getValue($entity, 'id');
+            } catch (NoSuchPropertyException $exception) {
+                $entityId = spl_object_hash($entity);
+            }
 
+            $fixture = $this->addFixture($className, $this->getObjectid($entity), $fixtureData);
+            if ($fixture) {
+                $fixture->setLinks($links);
+            }
+
+            return $fixture; 
+        }
         return null;
+    }
+
+    private function getObjectid($object): string
+    {
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        $className = (new ReflectionClass($object))->getShortName();
+        try {
+            $objectId = $propertyAccessor->getValue($object, 'id');
+        } catch (NoSuchPropertyException $exception) {
+            $objectId = spl_object_hash($object);
+        }
+        return $className . '-' . $objectId;
     }
 
     /**

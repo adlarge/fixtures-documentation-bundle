@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Adlarge\FixturesDocumentationBundle\Model;
 
 use Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
+use Adlarge\FixturesDocumentationBundle\Exception\DuplicateIdFixtureException;
 
 class Section
 {
@@ -81,23 +82,25 @@ class Section
      *
      * @throws DuplicateFixtureException
      */
-    public function addFixture(array $newFixture): Fixture
+    public function addFixture(Fixture $newFixture): void
     {
         foreach ($this->fixtures as $fixture) {
-            if (empty(array_diff_assoc($fixture->getData(), $newFixture))) {
-                $values = implode(',', $newFixture);
+            if ($fixture->getId() === $newFixture->getId()) {
+                throw new DuplicateIdFixtureException(
+                    "Duplicate fixture id in section {$this->title} : {$newFixture->getid()}"
+                );
+            }
+            
+            if (empty(array_diff_assoc($fixture->getData(), $newFixture->getData()))) {
+                $values = implode(',', $newFixture->getData());
                 throw new DuplicateFixtureException(
                     "Duplicate fixture in section {$this->title} : {$values}"
                 );
             }
         }
 
-        $fixture = new Fixture($this->getNextFixtureId(), $newFixture);
-
-        $this->fixtures[] = $fixture;
-        $this->updateHeaders($newFixture);
-
-        return $fixture;
+        $this->fixtures[] = $newFixture;
+        $this->updateHeaders($newFixture->getData());
     }
 
     /**
@@ -122,6 +125,6 @@ class Section
     {
         $fixtureNumber = count($this->fixtures) + 1;
 
-       return "{$this->getTitle()}-{$fixtureNumber}";
+        return "{$this->getTitle()}-{$fixtureNumber}";
     }
 }

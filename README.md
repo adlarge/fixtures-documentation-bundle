@@ -262,3 +262,17 @@ To generate the doc you only have to run `php bin/console doctrine:fixtures:load
 ## Result
 
 ![GitHub Logo](/doc/img/fixtures-documentation.png)
+
+## Development
+
+To make it run on your environment you have to install :
+
+    composer
+    php (5.6 or higher)
+    les extensions php
+    * php-xml
+    * php-mbstring
+
+To run tests on your env, run 
+
+    make test

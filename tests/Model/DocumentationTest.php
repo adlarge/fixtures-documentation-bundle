@@ -10,6 +10,7 @@ use Adlarge\FixturesDocumentationBundle\helpers\Model\Product;
 use Adlarge\FixturesDocumentationBundle\helpers\Model\ProductComplex;
 use Adlarge\FixturesDocumentationBundle\helpers\Model\ProductPublic;
 use Adlarge\FixturesDocumentationBundle\Model\Documentation;
+use Adlarge\FixturesDocumentationBundle\Model\Fixture;
 use Mockery;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
@@ -42,7 +43,7 @@ class DocumentationTest extends TestCase
     {
         $documentation = new Documentation([]);
 
-        $documentation->addFixture('fixtures', ['id' => 1, 'name' => 'fixture1']);
+        $documentation->addFixture('fixtures', '1', ['id' => 1, 'name' => 'fixture1']);
 
         $this->assertCount(1, $documentation->getSections());
         $this->assertSame('fixtures', $documentation->getSections()[0]->getTitle());
@@ -55,8 +56,8 @@ class DocumentationTest extends TestCase
     {
         $documentation = new Documentation([]);
         
-        $documentation->addFixture('fixtures', ['id' => 1, 'name' => 'fixture1']);
-        $documentation->addFixture('fixtures', ['id' => 2, 'name' => 'fixture2']);
+        $documentation->addFixture('fixtures', '1', ['id' => 1, 'name' => 'fixture1']);
+        $documentation->addFixture('fixtures', '2', ['id' => 2, 'name' => 'fixture2']);
 
         $this->assertCount(1, $documentation->getSections());
     }
@@ -68,8 +69,8 @@ class DocumentationTest extends TestCase
     {
         $documentation = new Documentation([]);
         
-        $documentation->addFixture('fixtures', ['id' => 1, 'name' => 'fixture1']);
-        $documentation->addFixture('other', ['id' => 1, 'name' => 'fixture1']);
+        $documentation->addFixture('fixtures', '1', ['id' => 1, 'name' => 'fixture1']);
+        $documentation->addFixture('other', '1', ['id' => 1, 'name' => 'fixture1']);
 
         $this->assertCount(2, $documentation->getSections());
     }
@@ -88,6 +89,11 @@ class DocumentationTest extends TestCase
 
     public function testAddFixtureEntity(): void
     {
+        $mockFixture = Mockery::mock(Fixture::class)
+            ->makePartial();
+        $mockFixture->shouldReceive('setLinks')
+            ->once();
+            
         $mockDocumentation = Mockery::mock(
             Documentation::class,
             [
@@ -98,7 +104,7 @@ class DocumentationTest extends TestCase
 
         $mockDocumentation->shouldReceive('addFixture')
             ->once()
-            ->with('Product', [
+            ->with('Product', 'Product-1', [
                 'name' => 'product 1',
                 'category' => 'category 1'
             ]);
@@ -124,7 +130,7 @@ class DocumentationTest extends TestCase
 
         $mockDocumentation->shouldReceive('addFixture')
             ->once()
-            ->with('ProductPublic', [
+            ->with('ProductPublic', 'ProductPublic-1', [
                 'name' => 'product 1',
                 'category' => 'category 1'
             ]);
@@ -140,6 +146,11 @@ class DocumentationTest extends TestCase
 
     public function testAddFixtureEntityWithComplexProperties(): void
     {
+        $mockFixture = Mockery::mock(Fixture::class)
+            ->makePartial();
+        $mockFixture->shouldReceive('setLinks')
+            ->once();
+
         $mockDocumentation = Mockery::mock(
             Documentation::class,
             [
@@ -153,17 +164,17 @@ class DocumentationTest extends TestCase
 
         $mockDocumentation->shouldReceive('addFixture')
             ->once()
-            ->with('ProductComplex', [
+            ->with('ProductComplex', 'ProductComplex-1', [
                 'name' => 'product 1',
                 'category' => 'category name',
                 'tags' => 3
             ]);
 
-            $category = new Category();
-            $category->name = 'category name';
-            $category->visibility = true;
+        $category = new Category();
+        $category->name = 'category name';
+        $category->visibility = true;
 
-            $product = (new ProductComplex())
+        $product = (new ProductComplex())
             ->setId(1)
             ->setName('product 1')
             ->setCategory($category)
@@ -188,7 +199,7 @@ class DocumentationTest extends TestCase
 
         $mockDocumentation->shouldReceive('addFixture')
             ->once()
-            ->with('Product', [
+            ->with('Product', 'Product-1', [
                 'category' => 'category 1'
             ]);
         
@@ -230,7 +241,7 @@ class DocumentationTest extends TestCase
     {
         $documentation = new Documentation([]);
         
-        $documentation->addFixture('fixtures', ['id' => 1, 'name' => 'fixture1']);
+        $documentation->addFixture('fixtures', '1', ['id' => 1, 'name' => 'fixture1']);
         $this->assertCount(1, $documentation->getSections());
 
         $documentation->reset();
@@ -245,10 +256,10 @@ class DocumentationTest extends TestCase
     {
         $documentation = new Documentation([]);
         
-        $fixture1 = $documentation->addFixture('some', ['id' => 1, 'name' => 'fixture1']);
-        $documentation->addFixture('some', ['id' => 2, 'name' => 'fixture2']);
-        $documentation->addFixture('others', ['id' => 1, 'pseudo' => 'autre2'])
-            ->addLink('pseudo', $fixture1);
+        $fixture1 = $documentation->addFixture('some', 'some-1', ['id' => 1, 'name' => 'fixture1']);
+        $documentation->addFixture('some', 'some-2', ['id' => 2, 'name' => 'fixture2']);
+        $documentation->addFixture('others', 'others-1', ['id' => 1, 'pseudo' => 'autre2'])
+            ->addLink('pseudo', $fixture1->getId());
 
         $this->assertSame(
             '{"some":{"fixtures":[{"id":"some-1","data":{"id":1,"name":"fixture1"},"links":[]},{"id":"some-2","data":{"id":2,"name":"fixture2"},"links":[]}]},"others":{"fixtures":[{"id":"others-1","data":{"id":1,"pseudo":"autre2"},"links":{"pseudo":"some-1"}}]}}',
@@ -285,8 +296,8 @@ class DocumentationTest extends TestCase
     public function testLinkReference(): void
     {
         $documentation = new Documentation([]);
-        $fixture1 = $documentation->addFixture('test', ['name' => 'Test1']);
-        $fixture2 = $documentation->addFixture('test', ['name' => 'Test2']);
+        $fixture1 = $documentation->addFixture('test', '1', ['name' => 'Test1']);
+        $fixture2 = $documentation->addFixture('test', '2', ['name' => 'Test2']);
 
         $documentation->addLinkReference('ref1', $fixture1);
         $documentation->addLinkReference('ref2', $fixture2);

@@ -15,7 +15,7 @@ class FixtureTest extends TestCase
     {
         $fixture1 = new Fixture('test-1', []);
         $fixture2 = new Fixture('some-1', ['name' => 'test']);
-        $fixture2->addLink('name', $fixture1);
+        $fixture2->addLink('name', $fixture1->getId());
 
         $this->assertEquals(['name' => 'test-1'], $fixture2->getLinks());
     }
@@ -29,7 +29,7 @@ class FixtureTest extends TestCase
 
         $fixture1 = new Fixture('test-1', []);
         $fixture2 = new Fixture('some-1', ['name' => 'test']);
-        $fixture2->addLink('name2', $fixture1);
+        $fixture2->addLink('name2', $fixture1->getId());
     }
 
     /**
@@ -41,7 +41,7 @@ class FixtureTest extends TestCase
 
         $fixture1 = new Fixture('test-1', []);
         $fixture2 = new Fixture('some-1', ['name' => 'test']);
-        $fixture2->addLink('name', $fixture1);
-        $fixture2->addLink('name', $fixture1);
+        $fixture2->addLink('name', $fixture1->getId());
+        $fixture2->addLink('name', $fixture1->getId());
     }
 }
