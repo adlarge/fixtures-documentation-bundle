@@ -84,7 +84,7 @@ class DocumentationTest extends TestCase
         
         $documentation = new Documentation([]);
         
-        $documentation->addFixture('fixtures', ['id' => 1, 'array' => ['name' => 'fixture1', 'color' => 'red']]);
+        $documentation->addFixture('fixtures', 1, ['id' => 1, 'array' => ['name' => 'fixture1', 'color' => 'red']]);
     }
 
     public function testAddFixtureEntity(): void
@@ -93,7 +93,7 @@ class DocumentationTest extends TestCase
             ->makePartial();
         $mockFixture->shouldReceive('setLinks')
             ->once();
-            
+
         $mockDocumentation = Mockery::mock(
             Documentation::class,
             [
@@ -107,7 +107,8 @@ class DocumentationTest extends TestCase
             ->with('Product', 'Product-1', [
                 'name' => 'product 1',
                 'category' => 'category 1'
-            ]);
+            ])
+            ->andReturn($mockFixture);
         
         $product = (new Product())
             ->setId(1)
@@ -120,6 +121,11 @@ class DocumentationTest extends TestCase
 
     public function testAddFixtureEntityWithPublicProperties(): void
     {
+        $mockFixture = Mockery::mock(Fixture::class)
+            ->makePartial();
+        $mockFixture->shouldReceive('setLinks')
+            ->once();
+
         $mockDocumentation = Mockery::mock(
             Documentation::class,
             [
@@ -133,7 +139,8 @@ class DocumentationTest extends TestCase
             ->with('ProductPublic', 'ProductPublic-1', [
                 'name' => 'product 1',
                 'category' => 'category 1'
-            ]);
+            ])
+            ->andReturn($mockFixture);
         
         $product = new ProductPublic();
         $product->id = 1;
@@ -141,11 +148,17 @@ class DocumentationTest extends TestCase
         $product->category = 'category 1';
 
         $mockDocumentation->addFixtureEntity($product);
+        // We expect 0 because if it has the good parameter it will be catch by the mock
         $this->assertCount(0, $mockDocumentation->getSections());
     }
 
     public function testAddFixtureEntityWithComplexProperties(): void
     {
+        $mockFixture = Mockery::mock(Fixture::class)
+            ->makePartial();
+        $mockFixture->shouldReceive('setLinks')
+            ->once();
+
         $mockFixture = Mockery::mock(Fixture::class)
             ->makePartial();
         $mockFixture->shouldReceive('setLinks')
@@ -168,7 +181,8 @@ class DocumentationTest extends TestCase
                 'name' => 'product 1',
                 'category' => 'category name',
                 'tags' => 3
-            ]);
+            ])
+            ->andReturn($mockFixture);
 
         $category = new Category();
         $category->name = 'category name';
@@ -189,6 +203,11 @@ class DocumentationTest extends TestCase
      */
     public function testAddFixtureEntityWithNonExistingProperty(): void
     {
+        $mockFixture = Mockery::mock(Fixture::class)
+            ->makePartial();
+        $mockFixture->shouldReceive('setLinks')
+            ->once();
+
         $mockDocumentation = Mockery::mock(
             Documentation::class,
             [
@@ -201,7 +220,8 @@ class DocumentationTest extends TestCase
             ->once()
             ->with('Product', 'Product-1', [
                 'category' => 'category 1'
-            ]);
+            ])
+            ->andReturn($mockFixture);
         
         $product = (new Product())
             ->setId(1)
