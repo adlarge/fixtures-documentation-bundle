@@ -43,7 +43,7 @@ class FixturesDocumentationListener
      */
     public function onCommandExecution(ConsoleCommandEvent $event): void
     {
-        if ($event->getCommand() && $event->getCommand()->getName() === 'doctrine:fixtures:load') {
+        if ($event->getCommand() && $event->getCommand()->getName() === $this->listenedCommand) {
             $this->fixturesDocumentationManager->startListening();
             $this->fixturesDocumentationManager->reset();
         }
