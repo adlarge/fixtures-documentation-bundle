@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Adlarge\FixturesDocumentationBundle\Model;
 
-use Adlarge\FixturesDocumentationBundle\Exception\BadFixtureLinkException;
 use Adlarge\FixturesDocumentationBundle\Exception\BadLinkReferenceException;
-use Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
-use Doctrine\Common\Collections\Collection;
+use Adlarge\FixturesDocumentationBundle\Exception\DuplicateIdFixtureException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use TypeError;
@@ -40,7 +38,7 @@ class Documentation
      * @param array $configEntities
      * @param string $jsonString
      * 
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function __construct(array $configEntities, string $jsonString = null)
     {
@@ -54,7 +52,7 @@ class Documentation
      * Create the documentation from jsonFile.
      *
      * @param string $jsonString
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     protected function init(string $jsonString): void
     {
@@ -81,11 +79,10 @@ class Documentation
      *
      * @param string $sectionTitle
      * @param string $id
-     * @param array  $fixture
-     *
+     * @param array $fixtureData
      * @return Fixture
      *
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function addFixture(string $sectionTitle, string $id, array $fixtureData): Fixture
     {
@@ -108,7 +105,7 @@ class Documentation
      *
      * @return Fixture|null
      *
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      * @throws ReflectionException
      */
     public function addFixtureEntity($entity): ?Fixture
@@ -134,7 +131,7 @@ class Documentation
                             $propertyClassName = (new ReflectionClass($value))->getShortName();
                             // Means that the object is one of the wanted class to be documented
                             if (array_key_exists($propertyClassName, $this->configEntities)) {
-                                $links[$property] = $this->getObjectid($value);
+                                $links[$property] = $this->getObjectId($value);
                             }
                         }
                     }
@@ -142,15 +139,8 @@ class Documentation
                     // ignore this exception silently
                 }
             }
-
-            try {
-                $entityId = $propertyAccessor->getValue($entity, 'id');
-            } catch (NoSuchPropertyException $exception) {
-                $entityId = spl_object_hash($entity);
-            }
-
-            $fixture = $this->addFixture($className, $this->getObjectid($entity), $fixtureData);
-            if ($fixture) {
+            $fixture = $this->addFixture($className, $this->getObjectId($entity), $fixtureData);
+            if ($fixture && $links) {
                 $fixture->setLinks($links);
             }
 
@@ -159,14 +149,29 @@ class Documentation
         return null;
     }
 
-    private function getObjectid($object): string
+    /**
+     * @param $object
+     * @return null|string
+     * @throws ReflectionException
+     */
+    private function getObjectId($object): ?string
     {
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
         $className = (new ReflectionClass($object))->getShortName();
         try {
             $objectId = $propertyAccessor->getValue($object, 'id');
         } catch (NoSuchPropertyException $exception) {
-            $objectId = spl_object_hash($object);
+            $objectRepresentation = [];
+            $reflect = new ReflectionClass($object);
+            $props = $reflect->getProperties();
+            foreach ($props as $prop) {
+                $value = $propertyAccessor->getValue($object, $prop->getName());
+                if (is_scalar($value)) {
+                    $objectRepresentation[$prop->getName()] = $value;
+                }
+            }
+
+            $objectId = md5(json_encode($objectRepresentation));
         }
         return $className . '-' . $objectId;
     }

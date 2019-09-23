@@ -16,16 +16,8 @@ class SectionTest extends TestCase
         $this->assertSame('title', $section->getTitle());
     }
 
-    public function testSetTitle(): void
-    {
-        $section = new Section('title');
-        $section->setTItle('title2');
-        
-        $this->assertSame('title2', $section->getTitle());
-    }
-
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testAddFixture(): void
     {
@@ -38,7 +30,7 @@ class SectionTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testAddFixtureMergeHeaders(): void
     {
@@ -51,7 +43,7 @@ class SectionTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testAddFixtureRaiseDuplicateFixtureException(): void
     {

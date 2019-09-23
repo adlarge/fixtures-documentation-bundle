@@ -4,11 +4,12 @@ namespace Tests\Model;
 
 use Adlarge\FixturesDocumentationBundle\Exception\BadFixtureLinkException;
 use Adlarge\FixturesDocumentationBundle\Exception\BadLinkReferenceException;
-use Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
+use Adlarge\FixturesDocumentationBundle\Exception\DuplicateIdFixtureException;
 use Adlarge\FixturesDocumentationBundle\helpers\Model\Category;
 use Adlarge\FixturesDocumentationBundle\helpers\Model\Product;
 use Adlarge\FixturesDocumentationBundle\helpers\Model\ProductComplex;
 use Adlarge\FixturesDocumentationBundle\helpers\Model\ProductPublic;
+use Adlarge\FixturesDocumentationBundle\helpers\Model\ProductWithoutId;
 use Adlarge\FixturesDocumentationBundle\Model\Documentation;
 use Adlarge\FixturesDocumentationBundle\Model\Fixture;
 use Mockery;
@@ -28,16 +29,17 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function tearDown(): void
     {
         $documentation = new Documentation([]);
         $documentation->reset();
+        Mockery::close();
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testAddFixture(): void
     {
@@ -50,7 +52,7 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testAddFixtureWithSameSection(): void
     {
@@ -63,7 +65,7 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testAddFixtureWithDifferentSection(): void
     {
@@ -76,7 +78,7 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testAddFixtureWithMultidimensionalArray(): void
     {
@@ -91,8 +93,7 @@ class DocumentationTest extends TestCase
     {
         $mockFixture = Mockery::mock(Fixture::class)
             ->makePartial();
-        $mockFixture->shouldReceive('setLinks')
-            ->once();
+        $mockFixture->shouldNotReceive('setLinks');
 
         $mockDocumentation = Mockery::mock(
             Documentation::class,
@@ -123,8 +124,7 @@ class DocumentationTest extends TestCase
     {
         $mockFixture = Mockery::mock(Fixture::class)
             ->makePartial();
-        $mockFixture->shouldReceive('setLinks')
-            ->once();
+        $mockFixture->shouldNotReceive('setLinks');
 
         $mockDocumentation = Mockery::mock(
             Documentation::class,
@@ -154,11 +154,6 @@ class DocumentationTest extends TestCase
 
     public function testAddFixtureEntityWithComplexProperties(): void
     {
-        $mockFixture = Mockery::mock(Fixture::class)
-            ->makePartial();
-        $mockFixture->shouldReceive('setLinks')
-            ->once();
-
         $mockFixture = Mockery::mock(Fixture::class)
             ->makePartial();
         $mockFixture->shouldReceive('setLinks')
@@ -198,15 +193,12 @@ class DocumentationTest extends TestCase
         $this->assertCount(0, $mockDocumentation->getSections());
     }
 
-    /**
-     * @throws DuplicateFixtureException
-     */
+
     public function testAddFixtureEntityWithNonExistingProperty(): void
     {
         $mockFixture = Mockery::mock(Fixture::class)
             ->makePartial();
-        $mockFixture->shouldReceive('setLinks')
-            ->once();
+        $mockFixture->shouldNotReceive('setLinks');
 
         $mockDocumentation = Mockery::mock(
             Documentation::class,
@@ -232,16 +224,12 @@ class DocumentationTest extends TestCase
         $this->assertCount(0, $mockDocumentation->getSections());
     }
 
-    /**
-     * @throws DuplicateFixtureException
-     */
     public function testAddFixtureEntityWithNonConfigEntity(): void
     {
         $mockDocumentation = Mockery::mock(Documentation::class, [[]])
             ->makePartial();
 
         $mockDocumentation->shouldNotReceive('addFixture')
-            ->once()
             ->with('Product', [
                 'category' => 'category 1'
             ]);
@@ -254,8 +242,68 @@ class DocumentationTest extends TestCase
         $this->assertNull($mockDocumentation->addFixtureEntity($product));
     }
 
+    public function testAddFixtureEntityWithoutId(): void
+    {
+
+        $mockFixture = Mockery::mock(Fixture::class)
+            ->makePartial();
+        $mockFixture->shouldNotReceive('setLinks');
+
+        $mockDocumentation = Mockery::mock(
+            Documentation::class,
+            [
+                ['ProductWithoutId' => ['name', 'category']]
+            ]
+        )
+            ->makePartial();
+
+        $mockDocumentation->shouldReceive('addFixture')
+            ->once()
+            ->with('ProductWithoutId', 'ProductWithoutId-5c353cc98e89a18fc6f13b0247f97f31', [
+                'name' => 'product 1',
+                'category' => 'category 1'
+            ])
+            ->andReturn($mockFixture);
+
+        $product = (new ProductWithoutId())
+            ->setName('product 1')
+            ->setCategory('category 1');
+        $mockDocumentation->addFixtureEntity($product);
+        $this->assertCount(0, $mockDocumentation->getSections());
+    }
+
+    public function testAddFixtureEntityWithLinkButWithoutId(): void
+    {
+
+        $mockFixture = Mockery::mock(Fixture::class)
+            ->makePartial();
+        $mockFixture->shouldNotReceive('setLinks');
+
+        $mockDocumentation = Mockery::mock(
+            Documentation::class,
+            [
+                ['ProductWithoutId' => ['name', 'category']]
+            ]
+        )
+            ->makePartial();
+
+        $mockDocumentation->shouldReceive('addFixture')
+            ->once()
+            ->with('ProductWithoutId', 'ProductWithoutId-5c353cc98e89a18fc6f13b0247f97f31', [
+                'name' => 'product 1',
+                'category' => 'category 1'
+            ])
+            ->andReturn($mockFixture);
+
+        $product = (new ProductWithoutId())
+            ->setName('product 1')
+            ->setCategory('category 1');
+        $mockDocumentation->addFixtureEntity($product);
+        $this->assertCount(0, $mockDocumentation->getSections());
+    }
+
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testReset(): void
     {
@@ -269,7 +317,7 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      * @throws BadFixtureLinkException
      */
     public function testToJson(): void
@@ -288,7 +336,7 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testInit(): void
     {
@@ -299,7 +347,7 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testInitEmpty(): void
     {
@@ -310,7 +358,7 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      * @throws BadLinkReferenceException
      */
     public function testLinkReference(): void
@@ -326,7 +374,7 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      * @throws BadLinkReferenceException
      */
     public function testNotExistingLinkReference(): void
