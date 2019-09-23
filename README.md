@@ -10,7 +10,24 @@ This Symfony bundle generates and exposes a documentation of your fixtures.
 An action to reload your fixtures can also be configured.
 
 The goal of this bundle is to allow testers to be independent, they can see data and reload fixtures when they want to test again.
+    
+## What does it do
 
+It will generate a json file with all the data to be used in a twig page to display fixtures to the end user.
+
+To add data to this json file you can process full manually, manually by passing the entity or full automatically.
+The main data to know of are : the type of the fixture (section title), the id of the fixture and the data of the fixture.
+
+It will display a page with a menu corresponding to the different sections (with links), and data tables regrouped by section.
+If you used links, it will display some columns with visible links to go directly to the linked object.
+
+When it encounter a property it can have 3 behaviors :
+
+* If it's a simple (scalar) property, it will display it (string, bool, int, etc)
+* If it's an array, it will display the total of elements in this array
+* If it's an object and it got a __toString public method, it will display the result of this method. 
+  If this class is in your configuration of entities, it will add a link toward it.
+ 
 ## Installation
 
 This is installable via [Composer](https://getcomposer.org/) as
@@ -63,11 +80,12 @@ Then you can install assets :
 
     php bin/console assets:install --symlink
 
-## Example
-
-To add fixtures to your documentation you have to get the manager in your fixtures file :
+## Examples
 
 ### Adding fixtures manually
+
+To add fixtures to your documentation you have to get the manager in your fixtures file :
+//TODO UPDATE THIS PART
 
 ```php
 class AppFixtures extends Fixture
@@ -115,6 +133,65 @@ class AppFixtures extends Fixture
     }
 }
 ```
+
+### Link fixtures
+
+It's possible to link fixtures between them, for example, if we have a list of comments with an author field that represent a user, we can link fixtures like this :
+//TODO UPDATE THIS PART
+
+```php
+class AppFixtures extends Fixture
+{
+    /**
+     * @var FixturesDocumentationManager
+     */
+    private $documentationManager;
+
+    /**
+     * AppFixtures constructor.
+     *
+     * @param FixturesDocumentationManager $documentationManager
+     */
+    public function __construct(FixturesDocumentationManager $documentationManager)
+    {
+        $this->documentationManager = $documentationManager;
+    }
+
+    /**
+     * @param ObjectManager $manager
+     *
+     * @throws DuplicateFixtureException
+     */
+    public function load(ObjectManager $manager)
+    {
+        $doc = $this->documentationManager->getDocumentation();        
+
+        $userFixture = $doc->addFixture('Users', [
+            'id' => 1,
+            'first name' => 'John',
+            'last name' => 'Doe',
+            'email' => 'john.doe@test.fr'
+        ]);        
+        $doc->addFixture('Comments', [
+            'id' => 1,
+            'text' => 'My comment',
+            'author' => 'John Doe',
+        ])
+            ->addLink('author', $userFixture);            
+
+        $manager->flush();
+    }
+}
+``` 
+
+The `addLink` method needs the field on which we want to create the link and the Fixture we want to link to.
+
+### Sharing fixtures
+
+It's possible to share fixtures between files. For this two methods are available on the Documentation object :
+
+* addLinkReference('ref', $fixture)
+* getLinkReference('ref')
 
 ### Adding fixtures with configuration and entity
 
@@ -195,65 +272,10 @@ class AppFixtures extends Fixture
 }
 ```
 
-NB: if the property owner is not scalar it will use the method __toString() if it exists
+### Adding fixtures fully automatically
 
-### Link fixtures
-
-It's possible to link fixtures between them, for example, if we have a list of comments with an author field that represent a user, we can link fixtures like this :
-
-```php
-class AppFixtures extends Fixture
-{
-    /**
-     * @var FixturesDocumentationManager
-     */
-    private $documentationManager;
-
-    /**
-     * AppFixtures constructor.
-     *
-     * @param FixturesDocumentationManager $documentationManager
-     */
-    public function __construct(FixturesDocumentationManager $documentationManager)
-    {
-        $this->documentationManager = $documentationManager;
-    }
-
-    /**
-     * @param ObjectManager $manager
-     *
-     * @throws DuplicateFixtureException
-     */
-    public function load(ObjectManager $manager)
-    {
-        $doc = $this->documentationManager->getDocumentation();        
-
-        $userFixture = $doc->addFixture('Users', [
-            'id' => 1,
-            'first name' => 'John',
-            'last name' => 'Doe',
-            'email' => 'john.doe@test.fr'
-        ]);        
-        $doc->addFixture('Comments', [
-            'id' => 1,
-            'text' => 'My comment',
-            'author' => 'John Doe',
-        ])
-            ->addLink('author', $userFixture);            
-
-        $manager->flush();
-    }
-}
-``` 
-
-The `addLink` method needs the field on which we want to create the link and the Fixture we want to link to.
-
-### Sharing fixtures
-
-It's possible to share fixtures between files. For this two methods are available on the Documentation object :
-
-* addLinkReference('ref', $fixture)
-* getLinkReference('ref')
+You can use 'enableAutoDocumentation' configuration. If set to 'True' this configuration will automatically
+document all object that are defined in 'entities' configuration.
 
 ## Generate documentation
 
