@@ -121,8 +121,10 @@ class Documentation
                 try {
                     $value = $propertyAccessor->getValue($entity, $property);
                     if (is_scalar($value)) {
+                        // For a scalar value (int, string, bool), we just display it
                         $fixtureData[$property] = $value;
                     } else if (is_array($value)) {
+                        // For an array we just count the total
                         $fixtureData[$property] = count($value);
                     } else {
                         // We are in an object context
@@ -131,7 +133,7 @@ class Documentation
                             $propertyClassName = (new ReflectionClass($value))->getShortName();
                             // Means that the object is one of the wanted class to be documented
                             if (array_key_exists($propertyClassName, $this->configEntities)) {
-                                $links[$property] = $this->getObjectId($value);
+                                $links[$property] = $propertyClassName . '-' . spl_object_id($value);
                             }
                         }
                     }
@@ -139,7 +141,7 @@ class Documentation
                     // ignore this exception silently
                 }
             }
-            $fixture = $this->addFixture($className, $this->getObjectId($entity), $fixtureData);
+            $fixture = $this->addFixture($className, $className . '-' . spl_object_id($entity), $fixtureData);
             if ($fixture && $links) {
                 $fixture->setLinks($links);
             }
@@ -149,32 +151,6 @@ class Documentation
         return null;
     }
 
-    /**
-     * @param $object
-     * @return null|string
-     * @throws ReflectionException
-     */
-    private function getObjectId($object): ?string
-    {
-        $propertyAccessor = PropertyAccess::createPropertyAccessor();
-        $className = (new ReflectionClass($object))->getShortName();
-        try {
-            $objectId = $propertyAccessor->getValue($object, 'id');
-        } catch (NoSuchPropertyException $exception) {
-            $objectRepresentation = [];
-            $reflect = new ReflectionClass($object);
-            $props = $reflect->getProperties();
-            foreach ($props as $prop) {
-                $value = $propertyAccessor->getValue($object, $prop->getName());
-                if (is_scalar($value)) {
-                    $objectRepresentation[$prop->getName()] = $value;
-                }
-            }
-
-            $objectId = md5(json_encode($objectRepresentation));
-        }
-        return $className . '-' . $objectId;
-    }
 
     /**
      * Reset the documentation by removing all sections.

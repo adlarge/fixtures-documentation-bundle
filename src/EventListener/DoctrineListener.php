@@ -3,10 +3,10 @@
 
 namespace Adlarge\FixturesDocumentationBundle\EventListener;
 
+use Adlarge\FixturesDocumentationBundle\Exception\DuplicateIdFixtureException;
 use Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use ReflectionException;
-use Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
 
 class DoctrineListener
 {
@@ -24,8 +24,8 @@ class DoctrineListener
 
     /**
      * @param LifecycleEventArgs $args
-     * @throws DuplicateFixtureException
      * @throws ReflectionException
+     * @throws DuplicateIdFixtureException
      */
     public function postPersist(LifecycleEventArgs $args)
     {
