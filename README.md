@@ -27,7 +27,14 @@ When it encounter a property it can have 3 behaviors :
 * If it's an array, it will display the total of elements in this array
 * If it's an object and it got a __toString public method, it will display the result of this method. 
   If this class is in your configuration of entities, it will add a link toward it.
- 
+
+## Working projects examples
+
+Some external projects are available to see and test the behavior of this bundle. You'll have to clone it next to this bundle 
+and follow the documentation to make it work
+
+* The project for [Alice case](https://github.com/bluepioupiou/fixture-doc-alicecase)
+
 ## Installation
 
 This is installable via [Composer](https://getcomposer.org/) as
