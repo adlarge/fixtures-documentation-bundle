@@ -288,7 +288,7 @@ To generate the doc you only have to run `php bin/console doctrine:fixtures:load
 To make it run on your environment you have to install :
 
     composer
-    php (7.2 or higher)
+    php (7.1 or higher)
     PHP extensions
     * php-xml
     * php-mbstring

@@ -95,6 +95,7 @@ class Documentation
         }
         $fixture = new Fixture($id, $fixtureData);
         $section->addFixture($fixture);
+
         return $fixture;
     }
 
