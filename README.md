@@ -85,7 +85,6 @@ Then you can install assets :
 ### Adding fixtures manually
 
 To add fixtures to your documentation you have to get the manager in your fixtures file :
-//TODO UPDATE THIS PART
 
 ```php
 class AppFixtures extends Fixture
@@ -137,7 +136,6 @@ class AppFixtures extends Fixture
 ### Link fixtures
 
 It's possible to link fixtures between them, for example, if we have a list of comments with an author field that represent a user, we can link fixtures like this :
-//TODO UPDATE THIS PART
 
 ```php
 class AppFixtures extends Fixture
@@ -275,7 +273,7 @@ class AppFixtures extends Fixture
 ### Adding fixtures fully automatically
 
 You can use 'enableAutoDocumentation' configuration. If set to 'True' this configuration will automatically
-document all object that are defined in 'entities' configuration.
+document all object that are defined in 'entities' configuration when they are postPersist in database.
 
 ## Generate documentation
 
@@ -290,11 +288,12 @@ To generate the doc you only have to run `php bin/console doctrine:fixtures:load
 To make it run on your environment you have to install :
 
     composer
-    php (5.6 or higher)
-    les extensions php
+    php (7.2 or higher)
+    PHP extensions
     * php-xml
     * php-mbstring
 
-To run tests on your env, run 
+To run tests on your env, run these commands. Each dev must cover 100% of code before PR
 
     make test
+    make coverage

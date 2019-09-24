@@ -59,8 +59,7 @@ class Documentation
         $doc = json_decode($jsonString, true);
         foreach ($doc as $sectionTitle => $section) {
             foreach ($section['fixtures'] as $item) {
-                $fixture = new Fixture($item['id'], $item['data']);
-                $this->addFixture($sectionTitle, $fixture->getId(), $fixture->getData())
+                $this->addFixture($sectionTitle,$item['data'], $item['id'])
                     ->setLinks($item['links']);
             }
         }
@@ -84,13 +83,16 @@ class Documentation
      *
      * @throws DuplicateIdFixtureException
      */
-    public function addFixture(string $sectionTitle, string $id, array $fixtureData): Fixture
+    public function addFixture(string $sectionTitle, array $fixtureData, string $id=null): Fixture
     {
         if (count($fixtureData) !== count($fixtureData, COUNT_RECURSIVE)) {
             throw new TypeError('A fixture can\'t be a multidimensional array.');
         }
         $section = $this->addSection($sectionTitle);
 
+        if ($id === null) {
+            $id = $section->getNextFixtureId();
+        }
         $fixture = new Fixture($id, $fixtureData);
         $section->addFixture($fixture);
         return $fixture;
@@ -141,7 +143,7 @@ class Documentation
                     // ignore this exception silently
                 }
             }
-            $fixture = $this->addFixture($className, $className . '-' . spl_object_id($entity), $fixtureData);
+            $fixture = $this->addFixture($className, $fixtureData, $className . '-' . spl_object_id($entity));
             if ($fixture && $links) {
                 $fixture->setLinks($links);
             }

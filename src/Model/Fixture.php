@@ -79,12 +79,12 @@ class Fixture
      * Add a link to an other Fixture.
      *
      * @param string $field
-     * @param string $fixtureToLinkId
+     * @param Fixture $fixtureToLink
      * @return Fixture
      *
      * @throws BadFixtureLinkException
      */
-    public function addLink(string $field, string $fixtureToLinkId): self
+    public function addLink(string $field, Fixture $fixtureToLink): self
     {
         if (!isset($this->data[$field])) {
             throw new BadFixtureLinkException(
@@ -96,7 +96,7 @@ class Fixture
             );
         }
 
-        $this->links[$field] = $fixtureToLinkId;
+        $this->links[$field] = $fixtureToLink->getId();
 
         return $this;
     }

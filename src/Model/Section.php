@@ -93,4 +93,15 @@ class Section
             array_keys($newFixture))
         );
     }
+
+    /**
+     * Generate next section fixture ID.
+     *
+     * @return string
+     */
+    public function getNextFixtureId(): string
+    {
+        $fixtureNumber = count($this->fixtures) + 1;
+        return "{$this->getTitle()}-{$fixtureNumber}";
+    }
 }

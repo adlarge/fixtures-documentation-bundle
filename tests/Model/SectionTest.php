@@ -52,4 +52,16 @@ class SectionTest extends TestCase
         $section->addFixture(new Fixture(1, ['id' => '1', 'name' => 'samefixture']));
         $section->addFixture(new Fixture(1, ['id' => '1', 'name' => 'samefixture']));
     }
+
+    /**
+     * @throws DuplicateIdFixtureException
+     */
+    public function testGetNextId(): void
+    {
+        $section = new Section('title');
+        $section->addFixture(new Fixture(1, ['id' => '1', 'name' => 'one fixture']));
+        $section->addFixture(new Fixture(2, ['id' => '2', 'name' => 'other fixture']));
+
+        $this->assertSame('title-3', $section->getNextFixtureId());
+    }
 }
