@@ -31,9 +31,11 @@ When it encounter a property it can have 3 behaviors :
 ## Working projects examples
 
 Some external projects are available to see and test the behavior of this bundle. You'll have to clone it next to this bundle 
-and follow the documentation to make it work
+and follow the documentation to make it work and see the prepared result by yourself.
 
-* The project for [Alice case](https://github.com/bluepioupiou/fixture-doc-alicecase)
+* The project for [Manual case](https://github.com/bluepioupiou/fixture-doc-manualcase) : if you want to manually manage your documentation
+* The project for [Doctrine automatic case](https://github.com/bluepioupiou/fixture-doc-autocase) : if you use doctrine and just want to configure entities and properties to document and let the bundle do
+* The project for [Alice case](https://github.com/bluepioupiou/fixture-doc-alicecase) : if you load fixtures through Alice bundle and want to let the bundle do with your configuration
 
 ## Installation
 
