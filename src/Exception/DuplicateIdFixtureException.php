@@ -6,6 +6,6 @@ namespace Adlarge\FixturesDocumentationBundle\Exception;
 
 use Exception;
 
-class DuplicateFixtureException extends Exception
+class DuplicateIdFixtureException extends Exception
 {
 }

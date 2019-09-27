@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Adlarge\FixturesDocumentationBundle\Service;
 
-use Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
+use Adlarge\FixturesDocumentationBundle\Exception\DuplicateIdFixtureException;
 use Adlarge\FixturesDocumentationBundle\Model\Documentation;
 use RuntimeException;
 use Symfony\Component\Process\Process;
@@ -42,10 +42,10 @@ class FixturesDocumentationManager
      * FixturesDocumentationManager constructor.
      *
      * @param string $projectDir
-     * @param array  $reloadCommands
-     * @param array  $configEntities
+     * @param array $reloadCommands
+     * @param array $configEntities
      *
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function __construct(string $projectDir, array $reloadCommands, array $configEntities)
     {
@@ -58,7 +58,7 @@ class FixturesDocumentationManager
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     protected function initDocumentation(): void
     {

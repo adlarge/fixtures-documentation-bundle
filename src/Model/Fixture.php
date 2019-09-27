@@ -79,8 +79,7 @@ class Fixture
      * Add a link to an other Fixture.
      *
      * @param string $field
-     * @param self   $fixtureToLink
-     *
+     * @param Fixture $fixtureToLink
      * @return Fixture
      *
      * @throws BadFixtureLinkException

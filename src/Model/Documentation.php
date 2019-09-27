@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Adlarge\FixturesDocumentationBundle\Model;
 
-use Adlarge\FixturesDocumentationBundle\Exception\BadFixtureLinkException;
 use Adlarge\FixturesDocumentationBundle\Exception\BadLinkReferenceException;
-use Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
-use Doctrine\Common\Collections\Collection;
+use Adlarge\FixturesDocumentationBundle\Exception\DuplicateIdFixtureException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use TypeError;
@@ -40,7 +38,7 @@ class Documentation
      * @param array $configEntities
      * @param string $jsonString
      * 
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function __construct(array $configEntities, string $jsonString = null)
     {
@@ -54,14 +52,14 @@ class Documentation
      * Create the documentation from jsonFile.
      *
      * @param string $jsonString
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     protected function init(string $jsonString): void
     {
         $doc = json_decode($jsonString, true);
         foreach ($doc as $sectionTitle => $section) {
             foreach ($section['fixtures'] as $item) {
-                $this->addFixture($sectionTitle, $item['data'])
+                $this->addFixture($sectionTitle,$item['data'], $item['id'])
                     ->setLinks($item['links']);
             }
         }
@@ -79,20 +77,26 @@ class Documentation
      * Add a fixture to the documentation.
      *
      * @param string $sectionTitle
-     * @param array  $fixture
-     *
+     * @param string $id
+     * @param array $fixtureData
      * @return Fixture
      *
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
-    public function addFixture(string $sectionTitle, array $fixture): Fixture
+    public function addFixture(string $sectionTitle, array $fixtureData, string $id=null): Fixture
     {
-        if (count($fixture) !== count($fixture, COUNT_RECURSIVE)) {
+        if (count($fixtureData) !== count($fixtureData, COUNT_RECURSIVE)) {
             throw new TypeError('A fixture can\'t be a multidimensional array.');
         }
         $section = $this->addSection($sectionTitle);
 
-        return $section->addFixture($fixture);
+        if ($id === null) {
+            $id = $section->getNextFixtureId();
+        }
+        $fixture = new Fixture($id, $fixtureData);
+        $section->addFixture($fixture);
+
+        return $fixture;
     }
 
     /**
@@ -104,39 +108,52 @@ class Documentation
      *
      * @return Fixture|null
      *
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      * @throws ReflectionException
      */
     public function addFixtureEntity($entity): ?Fixture
     {
         $className = (new ReflectionClass($entity))->getShortName();
+        $links = [];
         if (array_key_exists($className, $this->configEntities)) {
             $propertyAccessor = PropertyAccess::createPropertyAccessor();
             /** @var array $properties */
             $properties = $this->configEntities[$className];
-            $fixture = [];
+            $fixtureData = [];
             foreach ($properties as $property) {
                 try {
                     $value = $propertyAccessor->getValue($entity, $property);
                     if (is_scalar($value)) {
-                        $fixture[$property] = $value;
+                        // For a scalar value (int, string, bool), we just display it
+                        $fixtureData[$property] = $value;
                     } else if (is_array($value)) {
-                        $fixture[$property] = count($value);
+                        // For an array we just count the total
+                        $fixtureData[$property] = count($value);
                     } else {
+                        // We are in an object context
                         if (method_exists($value, '__toString')) {
-                            $fixture[$property] = $value->__toString();
+                            $fixtureData[$property] = $value->__toString();
+                            $propertyClassName = (new ReflectionClass($value))->getShortName();
+                            // Means that the object is one of the wanted class to be documented
+                            if (array_key_exists($propertyClassName, $this->configEntities)) {
+                                $links[$property] = $propertyClassName . '-' . spl_object_id($value);
+                            }
                         }
                     }
                 } catch (NoSuchPropertyException $exception) {
                     // ignore this exception silently
                 }
             }
+            $fixture = $this->addFixture($className, $fixtureData, $className . '-' . spl_object_id($entity));
+            if ($fixture && $links) {
+                $fixture->setLinks($links);
+            }
 
-            return $this->addFixture($className, $fixture);
+            return $fixture; 
         }
-
         return null;
     }
+
 
     /**
      * Reset the documentation by removing all sections.

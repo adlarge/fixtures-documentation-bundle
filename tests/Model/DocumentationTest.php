@@ -4,12 +4,14 @@ namespace Tests\Model;
 
 use Adlarge\FixturesDocumentationBundle\Exception\BadFixtureLinkException;
 use Adlarge\FixturesDocumentationBundle\Exception\BadLinkReferenceException;
-use Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
+use Adlarge\FixturesDocumentationBundle\Exception\DuplicateIdFixtureException;
 use Adlarge\FixturesDocumentationBundle\helpers\Model\Category;
 use Adlarge\FixturesDocumentationBundle\helpers\Model\Product;
 use Adlarge\FixturesDocumentationBundle\helpers\Model\ProductComplex;
 use Adlarge\FixturesDocumentationBundle\helpers\Model\ProductPublic;
+use Adlarge\FixturesDocumentationBundle\helpers\Model\ProductWithoutId;
 use Adlarge\FixturesDocumentationBundle\Model\Documentation;
+use Adlarge\FixturesDocumentationBundle\Model\Fixture;
 use Mockery;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
@@ -27,29 +29,31 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function tearDown(): void
     {
         $documentation = new Documentation([]);
         $documentation->reset();
+        Mockery::close();
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testAddFixture(): void
     {
         $documentation = new Documentation([]);
 
-        $documentation->addFixture('fixtures', ['id' => 1, 'name' => 'fixture1']);
+        $fixture = $documentation->addFixture('fixtures', ['id' => 1, 'name' => 'fixture1']);
 
         $this->assertCount(1, $documentation->getSections());
         $this->assertSame('fixtures', $documentation->getSections()[0]->getTitle());
+        $this->assertSame('fixtures-1', $fixture->getId());
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testAddFixtureWithSameSection(): void
     {
@@ -62,7 +66,7 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testAddFixtureWithDifferentSection(): void
     {
@@ -75,7 +79,7 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testAddFixtureWithMultidimensionalArray(): void
     {
@@ -88,6 +92,10 @@ class DocumentationTest extends TestCase
 
     public function testAddFixtureEntity(): void
     {
+        $mockFixture = Mockery::mock(Fixture::class)
+            ->makePartial();
+        $mockFixture->shouldNotReceive('setLinks');
+
         $mockDocumentation = Mockery::mock(
             Documentation::class,
             [
@@ -99,9 +107,14 @@ class DocumentationTest extends TestCase
         $mockDocumentation->shouldReceive('addFixture')
             ->once()
             ->with('Product', [
-                'name' => 'product 1',
-                'category' => 'category 1'
-            ]);
+                    'name' => 'product 1',
+                    'category' => 'category 1'
+                ],
+                Mockery::on(function($argument) {
+                    return strpos($argument, 'Product-') !== false;
+                })
+            )
+            ->andReturn($mockFixture);
         
         $product = (new Product())
             ->setId(1)
@@ -114,6 +127,10 @@ class DocumentationTest extends TestCase
 
     public function testAddFixtureEntityWithPublicProperties(): void
     {
+        $mockFixture = Mockery::mock(Fixture::class)
+            ->makePartial();
+        $mockFixture->shouldNotReceive('setLinks');
+
         $mockDocumentation = Mockery::mock(
             Documentation::class,
             [
@@ -125,9 +142,14 @@ class DocumentationTest extends TestCase
         $mockDocumentation->shouldReceive('addFixture')
             ->once()
             ->with('ProductPublic', [
-                'name' => 'product 1',
-                'category' => 'category 1'
-            ]);
+                    'name' => 'product 1',
+                    'category' => 'category 1'
+                ],
+                Mockery::on(function($argument) {
+                    return strpos($argument, 'ProductPublic-') !== false;
+                })
+            )
+            ->andReturn($mockFixture);
         
         $product = new ProductPublic();
         $product->id = 1;
@@ -135,11 +157,17 @@ class DocumentationTest extends TestCase
         $product->category = 'category 1';
 
         $mockDocumentation->addFixtureEntity($product);
+        // We expect 0 because if it has the good parameter it will be catch by the mock
         $this->assertCount(0, $mockDocumentation->getSections());
     }
 
     public function testAddFixtureEntityWithComplexProperties(): void
     {
+        $mockFixture = Mockery::mock(Fixture::class)
+            ->makePartial();
+        $mockFixture->shouldReceive('setLinks')
+            ->once();
+
         $mockDocumentation = Mockery::mock(
             Documentation::class,
             [
@@ -154,16 +182,21 @@ class DocumentationTest extends TestCase
         $mockDocumentation->shouldReceive('addFixture')
             ->once()
             ->with('ProductComplex', [
-                'name' => 'product 1',
-                'category' => 'category name',
-                'tags' => 3
-            ]);
+                    'name' => 'product 1',
+                    'category' => 'category name',
+                    'tags' => 3
+                ],
+                Mockery::on(function($argument) {
+                    return strpos($argument, 'ProductComplex-') !== false;
+                })
+            )
+            ->andReturn($mockFixture);
 
-            $category = new Category();
-            $category->name = 'category name';
-            $category->visibility = true;
+        $category = new Category();
+        $category->name = 'category name';
+        $category->visibility = true;
 
-            $product = (new ProductComplex())
+        $product = (new ProductComplex())
             ->setId(1)
             ->setName('product 1')
             ->setCategory($category)
@@ -173,11 +206,13 @@ class DocumentationTest extends TestCase
         $this->assertCount(0, $mockDocumentation->getSections());
     }
 
-    /**
-     * @throws DuplicateFixtureException
-     */
+
     public function testAddFixtureEntityWithNonExistingProperty(): void
     {
+        $mockFixture = Mockery::mock(Fixture::class)
+            ->makePartial();
+        $mockFixture->shouldNotReceive('setLinks');
+
         $mockDocumentation = Mockery::mock(
             Documentation::class,
             [
@@ -188,9 +223,15 @@ class DocumentationTest extends TestCase
 
         $mockDocumentation->shouldReceive('addFixture')
             ->once()
-            ->with('Product', [
-                'category' => 'category 1'
-            ]);
+            ->with(
+                'Product', [
+                    'category' => 'category 1'
+                ],
+                Mockery::on(function($argument) {
+                    return strpos($argument, 'Product-') !== false;
+                })
+            )
+            ->andReturn($mockFixture);
         
         $product = (new Product())
             ->setId(1)
@@ -201,16 +242,12 @@ class DocumentationTest extends TestCase
         $this->assertCount(0, $mockDocumentation->getSections());
     }
 
-    /**
-     * @throws DuplicateFixtureException
-     */
     public function testAddFixtureEntityWithNonConfigEntity(): void
     {
         $mockDocumentation = Mockery::mock(Documentation::class, [[]])
             ->makePartial();
 
         $mockDocumentation->shouldNotReceive('addFixture')
-            ->once()
             ->with('Product', [
                 'category' => 'category 1'
             ]);
@@ -224,13 +261,13 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testReset(): void
     {
         $documentation = new Documentation([]);
         
-        $documentation->addFixture('fixtures', ['id' => 1, 'name' => 'fixture1']);
+        $documentation->addFixture('fixtures', ['id' => 1, 'name' => 'fixture1'], '1');
         $this->assertCount(1, $documentation->getSections());
 
         $documentation->reset();
@@ -238,16 +275,16 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      * @throws BadFixtureLinkException
      */
     public function testToJson(): void
     {
         $documentation = new Documentation([]);
         
-        $fixture1 = $documentation->addFixture('some', ['id' => 1, 'name' => 'fixture1']);
-        $documentation->addFixture('some', ['id' => 2, 'name' => 'fixture2']);
-        $documentation->addFixture('others', ['id' => 1, 'pseudo' => 'autre2'])
+        $fixture1 = $documentation->addFixture('some', ['id' => 1, 'name' => 'fixture1'], 'some-1');
+        $documentation->addFixture('some', ['id' => 2, 'name' => 'fixture2'], 'some-2');
+        $documentation->addFixture('others', ['id' => 1, 'pseudo' => 'autre2'], 'others-1')
             ->addLink('pseudo', $fixture1);
 
         $this->assertSame(
@@ -257,7 +294,7 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testInit(): void
     {
@@ -268,7 +305,7 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testInitEmpty(): void
     {
@@ -279,14 +316,14 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      * @throws BadLinkReferenceException
      */
     public function testLinkReference(): void
     {
         $documentation = new Documentation([]);
-        $fixture1 = $documentation->addFixture('test', ['name' => 'Test1']);
-        $fixture2 = $documentation->addFixture('test', ['name' => 'Test2']);
+        $fixture1 = $documentation->addFixture('test', ['name' => 'Test1'], '1');
+        $fixture2 = $documentation->addFixture('test', ['name' => 'Test2'], '2');
 
         $documentation->addLinkReference('ref1', $fixture1);
         $documentation->addLinkReference('ref2', $fixture2);
@@ -295,7 +332,7 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      * @throws BadLinkReferenceException
      */
     public function testNotExistingLinkReference(): void
