@@ -27,7 +27,16 @@ When it encounter a property it can have 3 behaviors :
 * If it's an array, it will display the total of elements in this array
 * If it's an object and it got a __toString public method, it will display the result of this method. 
   If this class is in your configuration of entities, it will add a link toward it.
- 
+
+## Working projects examples
+
+Some external projects are available to see and test the behavior of this bundle. You'll have to clone it next to this bundle 
+and follow the documentation to make it work and see the prepared result by yourself.
+
+* The project for [Manual case](https://github.com/bluepioupiou/fixture-doc-manualcase) : if you want to manually manage your documentation
+* The project for [Doctrine automatic case](https://github.com/bluepioupiou/fixture-doc-autocase) : if you use doctrine and just want to configure entities and properties to document and let the bundle do
+* The project for [Alice case](https://github.com/bluepioupiou/fixture-doc-alicecase) : if you load fixtures through Alice bundle and want to let the bundle do with your configuration
+
 ## Installation
 
 This is installable via [Composer](https://getcomposer.org/) as
