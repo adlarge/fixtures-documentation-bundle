@@ -68,7 +68,7 @@ You can define vars by creating the file `config/packages/dev/adlarge_fixtures_d
         reloadCommands:
             - php bin/console doctrine:fixtures:load
             - ....
-        listenedCommand: 'php bin/console doctrine:fixtures:load'
+        listenedCommand: 'doctrine:fixtures:load'
         enableAutoDocumentation: true
         configEntities:
             Product:
@@ -80,7 +80,7 @@ You can define vars by creating the file `config/packages/dev/adlarge_fixtures_d
                 - lastname
 
 * title has a default value 'Fixtures documentation'
-* listenedCommand has a default value 'php bin/console doctrine:fixtures:load'
+* listenedCommand has a default value 'doctrine:fixtures:load'. For Alice bundle, you can set it to 'hautelook:fixtures:load'
 * reloadCommand is an optional array of commands you want to run from the view. If present a button to run these command will be visible in this view
 * enableAutoDocumentation is a boolean default to false. Set it to true if you want that all entities in fixtures are auto documented in postPersist
 * configEntities is an optional array of configurations for your entities you want to auto-document
