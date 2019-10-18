@@ -10,6 +10,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use TypeError;
 use ReflectionClass;
+use ReflectionMethod;
 use ReflectionException;
 use function array_key_exists;
 
@@ -31,6 +32,9 @@ class Documentation
      * @var array
      */
     private $linkReferences = [];
+
+    private $CONFIG_WITH_PROPERTIES = 'CONFIG_WITH_PROPERTIES';
+    private $CONFIG_WITHOUT_PROPERTIES = 'CONFIG_WITHOUT_PROPERTIES';
 
     /**
      * Documentation constructor.
@@ -115,14 +119,28 @@ class Documentation
     {
         $className = (new ReflectionClass($entity))->getShortName();
         $links = [];
+        $config = $this->CONFIG_WITH_PROPERTIES;
         if (array_key_exists($className, $this->configEntities)) {
             $propertyAccessor = PropertyAccess::createPropertyAccessor();
             /** @var array $properties */
             $properties = $this->configEntities[$className];
+            if (sizeof($properties) === 0){
+                $config = $this->CONFIG_WITHOUT_PROPERTIES;
+                $properties = (new ReflectionClass($entity))->getMethods(ReflectionMethod::IS_PUBLIC);
+            }
             $fixtureData = [];
             foreach ($properties as $property) {
                 try {
-                    $value = $propertyAccessor->getValue($entity, $property);
+                    if ($config === $this->CONFIG_WITH_PROPERTIES) {
+                        $value = $propertyAccessor->getValue($entity, $property);
+                    } else {
+                        if (strpos($property->name, 'get') !== 0) {
+                            // We only took method that begin with 'get'
+                            continue;
+                        }
+                        $value = $entity->{$property->name}();
+                        $property = substr($property->name, 3, strlen($property->name) - 3);
+                    }
                     if (is_scalar($value)) {
                         // For a scalar value (int, string, bool), we just display it
                         $fixtureData[$property] = $value;
