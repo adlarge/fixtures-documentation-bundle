@@ -70,7 +70,7 @@ You can define vars by creating the file `config/packages/dev/adlarge_fixtures_d
             - ....
         listenedCommand: 'php bin/console doctrine:fixtures:load'
         enableAutoDocumentation: true
-        entities:
+        configEntities:
             Product:
                 - id
                 - name
@@ -83,7 +83,7 @@ You can define vars by creating the file `config/packages/dev/adlarge_fixtures_d
 * listenedCommand has a default value 'php bin/console doctrine:fixtures:load'
 * reloadCommand is an optional array of commands you want to run from the view. If present a button to run these command will be visible in this view
 * enableAutoDocumentation is a boolean default to false. Set it to true if you want that all entities in fixtures are auto documented in postPersist
-* entities is an optional array of configurations for your entities you want to auto-document
+* configEntities is an optional array of configurations for your entities you want to auto-document
 
 Then you can install assets :
 
@@ -202,7 +202,7 @@ It's possible to share fixtures between files. For this two methods are availabl
 
 ### Adding fixtures with configuration and entity
 
-If you provided the good entity name and properties in configuration `entities` you can 
+If you provided the good entity name and properties in configuration `configEntities` you can 
 use the method `addFixtureEntity`.
 It will parse scalar properties and can check public properties as well as private ones with a getter (property, getProperty(), hasProperty(), isProperty()).
 It will parse non scalar properties as well, if it's an array it will display the count, if it's an entity it will display the result of __toString if it exists.
@@ -215,7 +215,7 @@ With the following configuration :
         title: 'Your title'
         reloadCommands:
             - php bin/console doctrine:fixtures:load
-        entities:
+        configEntities:
             Product:
                 - name
                 - category
@@ -282,7 +282,7 @@ class AppFixtures extends Fixture
 ### Adding fixtures fully automatically
 
 You can use 'enableAutoDocumentation' configuration. If set to 'True' this configuration will automatically
-document all object that are defined in 'entities' configuration when they are postPersist in database.
+document all object that are defined in 'configEntities' configuration when they are postPersist in database.
 
 ## Generate documentation
 
