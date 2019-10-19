@@ -120,56 +120,60 @@ class Documentation
         $className = (new ReflectionClass($entity))->getShortName();
         $links = [];
         $config = $this->CONFIG_WITH_PROPERTIES;
-        if (array_key_exists($className, $this->configEntities)) {
-            $propertyAccessor = PropertyAccess::createPropertyAccessor();
-            /** @var array $properties */
-            $properties = $this->configEntities[$className];
-            if (sizeof($properties) === 0){
-                $config = $this->CONFIG_WITHOUT_PROPERTIES;
-                $properties = (new ReflectionClass($entity))->getMethods(ReflectionMethod::IS_PUBLIC);
-            }
-            $fixtureData = [];
-            foreach ($properties as $property) {
-                try {
-                    if ($config === $this->CONFIG_WITH_PROPERTIES) {
-                        $value = $propertyAccessor->getValue($entity, $property);
-                    } else {
-                        if (strpos($property->name, 'get') !== 0) {
-                            // We only took method that begin with 'get'
-                            continue;
-                        }
-                        $value = $entity->{$property->name}();
-                        $property = substr($property->name, 3, strlen($property->name) - 3);
-                    }
-                    if (is_scalar($value)) {
-                        // For a scalar value (int, string, bool), we just display it
-                        $fixtureData[$property] = $value;
-                    } else if (is_array($value)) {
-                        // For an array we just count the total
-                        $fixtureData[$property] = count($value);
-                    } else {
-                        // We are in an object context
-                        if (method_exists($value, '__toString')) {
-                            $fixtureData[$property] = $value->__toString();
-                            $propertyClassName = (new ReflectionClass($value))->getShortName();
-                            // Means that the object is one of the wanted class to be documented
-                            if (array_key_exists($propertyClassName, $this->configEntities)) {
-                                $links[$property] = $propertyClassName . '-' . spl_object_id($value);
-                            }
-                        }
-                    }
-                } catch (NoSuchPropertyException $exception) {
-                    // ignore this exception silently
-                }
-            }
-            $fixture = $this->addFixture($className, $fixtureData, $className . '-' . spl_object_id($entity));
-            if ($fixture && $links) {
-                $fixture->setLinks($links);
-            }
 
-            return $fixture; 
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        if (!$this->configEntities || array_key_exists($className, $this->configEntities) && sizeof($this->configEntities[$className]) === 0){
+            // There is no config at all or there is one for this entity but it's empty
+            $config = $this->CONFIG_WITHOUT_PROPERTIES;
+            $properties = (new ReflectionClass($entity))->getMethods(ReflectionMethod::IS_PUBLIC);
+        } else if (!array_key_exists($className, $this->configEntities)) {
+            // There is configEntities, and there is entities inside, but not this one, so we ignore it
+            return null;
+        } else {
+            // We found a non empty configuration for this entity
+            $properties = $this->configEntities[$className];
         }
-        return null;
+        $fixtureData = [];
+        foreach ($properties as $property) {
+            try {
+                if ($config === $this->CONFIG_WITH_PROPERTIES) {
+                    $value = $propertyAccessor->getValue($entity, $property);
+                } else {
+                    if (strpos($property->name, 'get') !== 0) {
+                        // We only took method that begin with 'get'
+                        continue;
+                    }
+                    $value = $entity->{$property->name}();
+                    $property = substr($property->name, 3, strlen($property->name) - 3);
+                }
+                if (is_scalar($value)) {
+                    // For a scalar value (int, string, bool), we just display it
+                    $fixtureData[$property] = $value;
+                } else if (is_array($value)) {
+                    // For an array we just count the total
+                    $fixtureData[$property] = count($value);
+                } else {
+                    // We are in an object context
+                    if (method_exists($value, '__toString')) {
+                        $fixtureData[$property] = $value->__toString();
+                        $propertyClassName = (new ReflectionClass($value))->getShortName();
+                        // Means that the object is one of the wanted class to be documented
+                        if (!$this->configEntities || array_key_exists($propertyClassName, $this->configEntities)) {
+                            $links[$property] = $propertyClassName . '-' . spl_object_id($value);
+                        }
+                    }
+                }
+            } catch (NoSuchPropertyException $exception) {
+                // ignore this exception silently
+            }
+        }
+
+        $fixture = $this->addFixture($className, $fixtureData, $className . '-' . spl_object_id($entity));
+        if ($fixture && $links) {
+            $fixture->setLinks($links);
+        }
+
+        return $fixture;
     }
 
 
