@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Adlarge\FixturesDocumentationBundle\Controller;
 
-use Exception;
 use Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager;
+use Exception;
 use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;

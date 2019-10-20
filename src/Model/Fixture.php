@@ -31,7 +31,7 @@ class Fixture
      * Fixture constructor.
      *
      * @param string $id
-     * @param array  $data
+     * @param array $data
      */
     public function __construct(string $id, array $data)
     {

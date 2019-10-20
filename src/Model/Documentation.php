@@ -6,11 +6,11 @@ namespace Adlarge\FixturesDocumentationBundle\Model;
 
 use Adlarge\FixturesDocumentationBundle\Exception\BadLinkReferenceException;
 use Adlarge\FixturesDocumentationBundle\Exception\DuplicateIdFixtureException;
-use Symfony\Component\PropertyAccess\PropertyAccess;
-use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
-use TypeError;
 use ReflectionClass;
 use ReflectionException;
+use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+use TypeError;
 use function array_key_exists;
 
 class Documentation
@@ -37,7 +37,7 @@ class Documentation
      *
      * @param array $configEntities
      * @param string $jsonString
-     * 
+     *
      * @throws DuplicateIdFixtureException
      */
     public function __construct(array $configEntities, string $jsonString = null)
@@ -59,7 +59,7 @@ class Documentation
         $doc = json_decode($jsonString, true);
         foreach ($doc as $sectionTitle => $section) {
             foreach ($section['fixtures'] as $item) {
-                $this->addFixture($sectionTitle,$item['data'], $item['id'])
+                $this->addFixture($sectionTitle, $item['data'], $item['id'])
                     ->setLinks($item['links']);
             }
         }
@@ -83,7 +83,7 @@ class Documentation
      *
      * @throws DuplicateIdFixtureException
      */
-    public function addFixture(string $sectionTitle, array $fixtureData, string $id=null): Fixture
+    public function addFixture(string $sectionTitle, array $fixtureData, string $id = null): Fixture
     {
         if (count($fixtureData) !== count($fixtureData, COUNT_RECURSIVE)) {
             throw new TypeError('A fixture can\'t be a multidimensional array.');
@@ -149,7 +149,7 @@ class Documentation
                 $fixture->setLinks($links);
             }
 
-            return $fixture; 
+            return $fixture;
         }
         return null;
     }
@@ -213,7 +213,7 @@ class Documentation
     /**
      * Add a linkable fixture reference.
      *
-     * @param string  $refName
+     * @param string $refName
      * @param Fixture $fixture
      *
      * @return Documentation

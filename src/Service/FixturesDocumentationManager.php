@@ -68,6 +68,7 @@ class FixturesDocumentationManager
         }
         $this->documentation = new Documentation($this->configEntities, $jsonString);
     }
+
     /**
      * Get current Documentation.
      *
