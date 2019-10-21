@@ -9,7 +9,6 @@ use Adlarge\FixturesDocumentationBundle\helpers\Model\Category;
 use Adlarge\FixturesDocumentationBundle\helpers\Model\Product;
 use Adlarge\FixturesDocumentationBundle\helpers\Model\ProductComplex;
 use Adlarge\FixturesDocumentationBundle\helpers\Model\ProductPublic;
-use Adlarge\FixturesDocumentationBundle\helpers\Model\ProductWithoutId;
 use Adlarge\FixturesDocumentationBundle\Model\Documentation;
 use Adlarge\FixturesDocumentationBundle\Model\Fixture;
 use Mockery;
@@ -58,7 +57,7 @@ class DocumentationTest extends TestCase
     public function testAddFixtureWithSameSection(): void
     {
         $documentation = new Documentation([]);
-        
+
         $documentation->addFixture('fixtures', ['id' => 1, 'name' => 'fixture1']);
         $documentation->addFixture('fixtures', ['id' => 2, 'name' => 'fixture2']);
 
@@ -71,7 +70,7 @@ class DocumentationTest extends TestCase
     public function testAddFixtureWithDifferentSection(): void
     {
         $documentation = new Documentation([]);
-        
+
         $documentation->addFixture('fixtures', ['id' => 1, 'name' => 'fixture1']);
         $documentation->addFixture('other', ['id' => 1, 'name' => 'fixture1']);
 
@@ -84,9 +83,9 @@ class DocumentationTest extends TestCase
     public function testAddFixtureWithMultidimensionalArray(): void
     {
         $this->expectException(TypeError::class);
-        
+
         $documentation = new Documentation([]);
-        
+
         $documentation->addFixture('fixtures', ['id' => 1, 'array' => ['name' => 'fixture1', 'color' => 'red']]);
     }
 
@@ -106,7 +105,9 @@ class DocumentationTest extends TestCase
 
         $mockDocumentation->shouldReceive('addFixture')
             ->once()
-            ->with('Product', [
+            ->with(
+                'Product',
+                [
                     'name' => 'product 1',
                     'category' => 'category 1'
                 ],
@@ -115,7 +116,7 @@ class DocumentationTest extends TestCase
                 })
             )
             ->andReturn($mockFixture);
-        
+
         $product = (new Product())
             ->setId(1)
             ->setName('product 1')
@@ -141,7 +142,9 @@ class DocumentationTest extends TestCase
 
         $mockDocumentation->shouldReceive('addFixture')
             ->once()
-            ->with('ProductPublic', [
+            ->with(
+                'ProductPublic',
+                [
                     'name' => 'product 1',
                     'category' => 'category 1'
                 ],
@@ -150,7 +153,7 @@ class DocumentationTest extends TestCase
                 })
             )
             ->andReturn($mockFixture);
-        
+
         $product = new ProductPublic();
         $product->id = 1;
         $product->name = 'product 1';
@@ -181,7 +184,9 @@ class DocumentationTest extends TestCase
 
         $mockDocumentation->shouldReceive('addFixture')
             ->once()
-            ->with('ProductComplex', [
+            ->with(
+                'ProductComplex',
+                [
                     'name' => 'product 1',
                     'category' => 'category name',
                     'tags' => 3
@@ -224,7 +229,8 @@ class DocumentationTest extends TestCase
         $mockDocumentation->shouldReceive('addFixture')
             ->once()
             ->with(
-                'Product', [
+                'Product',
+                [
                     'category' => 'category 1'
                 ],
                 Mockery::on(function($argument) {
@@ -232,7 +238,7 @@ class DocumentationTest extends TestCase
                 })
             )
             ->andReturn($mockFixture);
-        
+
         $product = (new Product())
             ->setId(1)
             ->setName('product 1')
@@ -266,7 +272,7 @@ class DocumentationTest extends TestCase
     public function testReset(): void
     {
         $documentation = new Documentation([]);
-        
+
         $documentation->addFixture('fixtures', ['id' => 1, 'name' => 'fixture1'], '1');
         $this->assertCount(1, $documentation->getSections());
 
@@ -281,14 +287,14 @@ class DocumentationTest extends TestCase
     public function testToJson(): void
     {
         $documentation = new Documentation([]);
-        
+
         $fixture1 = $documentation->addFixture('some', ['id' => 1, 'name' => 'fixture1'], 'some-1');
         $documentation->addFixture('some', ['id' => 2, 'name' => 'fixture2'], 'some-2');
         $documentation->addFixture('others', ['id' => 1, 'pseudo' => 'autre2'], 'others-1')
             ->addLink('pseudo', $fixture1);
 
         $this->assertSame(
-            '{"some":{"fixtures":[{"id":"some-1","data":{"id":1,"name":"fixture1"},"links":[]},{"id":"some-2","data":{"id":2,"name":"fixture2"},"links":[]}]},"others":{"fixtures":[{"id":"others-1","data":{"id":1,"pseudo":"autre2"},"links":{"pseudo":"some-1"}}]}}',
+            '{"others":{"fixtures":[{"id":"others-1","data":{"id":1,"pseudo":"autre2"},"links":{"pseudo":"some-1"}}]},"some":{"fixtures":[{"id":"some-1","data":{"id":1,"name":"fixture1"},"links":[]},{"id":"some-2","data":{"id":2,"name":"fixture2"},"links":[]}]}}',
             $documentation->toJson()
         );
     }
@@ -299,7 +305,7 @@ class DocumentationTest extends TestCase
     public function testInit(): void
     {
         $jsonString = '{"some":{"fixtures":[{"id":"some-1","data":{"id":1,"name":"fixture1"},"links":[]},{"id":"some-2","data":{"id":2,"name":"fixture2"},"links":[]}]},"others":{"fixtures":[{"id":"others-1","data":{"id":1,"pseudo":"autre2"},"links":[]}]}}';
-        
+
         $documentation = new Documentation([], $jsonString);
         $this->assertCount(2, $documentation->getSections());
     }

@@ -2,14 +2,14 @@
 
 namespace Tests\Model;
 
+use Adlarge\FixturesDocumentationBundle\Exception\DuplicateIdFixtureException;
+use Adlarge\FixturesDocumentationBundle\Model\Documentation;
+use Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager;
+use Mockery;
+use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
-use Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager;
-use Adlarge\FixturesDocumentationBundle\Model\Documentation;
-use \Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
-use org\bovigo\vfs\vfsStream;
 use RuntimeException;
-use Mockery;
 
 /**
  * @runTestsInSeparateProcesses
@@ -23,7 +23,7 @@ class FixturesDocumentationManagerTest extends TestCase
     public function setUp(): void
     {
         $this->root = vfsStream::setup();
-        
+
     }
 
     public function tearDown()
@@ -32,7 +32,7 @@ class FixturesDocumentationManagerTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testGetDocumentation(): void
     {
@@ -40,14 +40,15 @@ class FixturesDocumentationManagerTest extends TestCase
         $documentationManager = new FixturesDocumentationManager(
             $this->root->url(),
             ['dummyCommand'],
-            []
+            [],
+            false
         );
 
         $this->assertInstanceOf(Documentation::class, $documentationManager->getDocumentation());
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testReset(): void
     {
@@ -55,7 +56,8 @@ class FixturesDocumentationManagerTest extends TestCase
         $documentationManager = new FixturesDocumentationManager(
             $this->root->url(),
             ['dummyCommand'],
-            []
+            [],
+            false
         );
 
         file_put_contents(
@@ -68,7 +70,7 @@ class FixturesDocumentationManagerTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testSave(): void
     {
@@ -76,20 +78,21 @@ class FixturesDocumentationManagerTest extends TestCase
         $documentationManager = new FixturesDocumentationManager(
             $this->root->url(),
             ['dummyCommand'],
-            []
+            [],
+            false
         );
 
         $documentationManager->save();
         $this->assertTrue($this->root->hasChild('var/fixtures.documentation.json'));
     }
 
-     /**
-     * @throws DuplicateFixtureException
+    /**
+     * @throws DuplicateIdFixtureException
      */
     public function testInitDocumentation(): void
     {
         vfsStream::newDirectory('var')->at($this->root);
-        
+
         file_put_contents(
             $this->root->url() . '/var/fixtures.documentation.json',
             '{}'
@@ -97,30 +100,32 @@ class FixturesDocumentationManagerTest extends TestCase
         $documentationManager = new FixturesDocumentationManager(
             $this->root->url(),
             ['dummyCommand'],
-            []
+            [],
+            false
         );
 
         $this->assertInstanceOf(Documentation::class, $documentationManager->getDocumentation());
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testReloadWithUnknownCommand(): void
     {
         $this->expectException(RuntimeException::class);
-        
+
         $documentationManager = new FixturesDocumentationManager(
             $this->root->url(),
             ['knownCommand'],
-            []
+            [],
+            false
         );
 
         $documentationManager->reload();
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testReload(): void
     {
@@ -133,39 +138,42 @@ class FixturesDocumentationManagerTest extends TestCase
         $mockProcess->shouldReceive('isSuccessful')
             ->once()
             ->andReturn(true);
-        
+
         $documentationManager = new FixturesDocumentationManager(
             $this->root->url(),
             ['workingCommand with args', 'workingCommand2 with other args'],
-            []
+            [],
+            false
         );
 
         $this->assertSame(1, $documentationManager->reload());
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testIsListeningByDefault(): void
     {
         $documentationManager = new FixturesDocumentationManager(
             '',
             ['dummyCommand'],
-            []
+            [],
+            false
         );
 
         $this->assertFalse($documentationManager->isListening());
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testIsListeningStart(): void
     {
         $documentationManager = new FixturesDocumentationManager(
             '',
             ['dummyCommand'],
-            []
+            [],
+            false
         );
 
         $documentationManager->startListening();
@@ -174,14 +182,15 @@ class FixturesDocumentationManagerTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testIsListeningStartAndStop(): void
     {
         $documentationManager = new FixturesDocumentationManager(
             '',
             ['dummyCommand'],
-            []
+            [],
+            false
         );
 
         $documentationManager->startListening();

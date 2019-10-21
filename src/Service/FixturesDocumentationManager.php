@@ -29,6 +29,10 @@ class FixturesDocumentationManager
      */
     private $configEntities;
     /**
+     * @var bool
+     */
+    private $enableAutoDocumentation;
+    /**
      * @var Documentation
      */
     private $documentation;
@@ -44,15 +48,21 @@ class FixturesDocumentationManager
      * @param string $projectDir
      * @param array $reloadCommands
      * @param array $configEntities
+     * @param bool $enableAutoDocumentation
      *
      * @throws DuplicateIdFixtureException
      */
-    public function __construct(string $projectDir, array $reloadCommands, array $configEntities)
-    {
+    public function __construct(
+        string $projectDir,
+        array $reloadCommands,
+        array $configEntities,
+        bool $enableAutoDocumentation
+    ) {
         $this->projectDir = $projectDir;
         $this->jsonFilePath = $this->projectDir . '/var/' . self::FILE_NAME;
         $this->reloadCommands = $reloadCommands;
         $this->configEntities = $configEntities;
+        $this->enableAutoDocumentation = $enableAutoDocumentation;
 
         $this->initDocumentation();
     }
@@ -66,7 +76,7 @@ class FixturesDocumentationManager
         if ($this->jsonFilePath && is_file($this->jsonFilePath)) {
             $jsonString = file_get_contents($this->jsonFilePath);
         }
-        $this->documentation = new Documentation($this->configEntities, $jsonString);
+        $this->documentation = new Documentation($this->configEntities, $jsonString, $this->enableAutoDocumentation);
     }
 
     /**

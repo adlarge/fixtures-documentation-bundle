@@ -26,6 +26,10 @@ class Documentation
      */
     private $configEntities;
     /**
+     * @var bool
+     */
+    private $enableAutoDocumentation;
+    /**
      * List of linkable Fixtures.
      *
      * @var array
@@ -36,13 +40,15 @@ class Documentation
      * Documentation constructor.
      *
      * @param array $configEntities
+     * @param bool $enableAutoDocumentation
      * @param string $jsonString
      *
      * @throws DuplicateIdFixtureException
      */
-    public function __construct(array $configEntities, string $jsonString = null)
+    public function __construct(array $configEntities, string $jsonString = null, bool $enableAutoDocumentation = false)
     {
         $this->configEntities = $configEntities;
+        $this->enableAutoDocumentation = $enableAutoDocumentation;
         if ($jsonString) {
             $this->init($jsonString);
         }
@@ -114,44 +120,46 @@ class Documentation
     public function addFixtureEntity($entity): ?Fixture
     {
         $className = (new ReflectionClass($entity))->getShortName();
+
+        if (!$this->isClassAllowedToDoc($className)) {
+            return null;
+        }
+
         $links = [];
-        if (array_key_exists($className, $this->configEntities)) {
-            $propertyAccessor = PropertyAccess::createPropertyAccessor();
-            /** @var array $properties */
-            $properties = $this->configEntities[$className];
-            $fixtureData = [];
-            foreach ($properties as $property) {
-                try {
-                    $value = $propertyAccessor->getValue($entity, $property);
-                    if (is_scalar($value)) {
-                        // For a scalar value (int, string, bool), we just display it
-                        $fixtureData[$property] = $value;
-                    } else if (is_array($value)) {
-                        // For an array we just count the total
-                        $fixtureData[$property] = count($value);
-                    } else {
-                        // We are in an object context
-                        if (method_exists($value, '__toString')) {
-                            $fixtureData[$property] = $value->__toString();
-                            $propertyClassName = (new ReflectionClass($value))->getShortName();
-                            // Means that the object is one of the wanted class to be documented
-                            if (array_key_exists($propertyClassName, $this->configEntities)) {
-                                $links[$property] = $propertyClassName . '-' . spl_object_id($value);
-                            }
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        /** @var array $properties */
+        $properties = $this->configEntities[$className];
+        $fixtureData = [];
+        foreach ($properties as $property) {
+            try {
+                $value = $propertyAccessor->getValue($entity, $property);
+                if (is_scalar($value)) {
+                    // For a scalar value (int, string, bool), we just display it
+                    $fixtureData[$property] = $value;
+                } elseif (is_array($value)) {
+                    // For an array we just count the total
+                    $fixtureData[$property] = count($value);
+                } else {
+                    // We are in an object context
+                    if (method_exists($value, '__toString')) {
+                        $fixtureData[$property] = $value->__toString();
+                        $propertyClassName = (new ReflectionClass($value))->getShortName();
+                        // Means that the object is one of the wanted class to be documented
+                        if ($this->isClassAllowedToDoc($propertyClassName)) {
+                            $links[$property] = $propertyClassName . '-' . spl_object_id($value);
                         }
                     }
-                } catch (NoSuchPropertyException $exception) {
-                    // ignore this exception silently
                 }
+            } catch (NoSuchPropertyException $exception) {
+                // ignore this exception silently
             }
-            $fixture = $this->addFixture($className, $fixtureData, $className . '-' . spl_object_id($entity));
-            if ($fixture && $links) {
-                $fixture->setLinks($links);
-            }
-
-            return $fixture;
         }
-        return null;
+        $fixture = $this->addFixture($className, $fixtureData, $className . '-' . spl_object_id($entity));
+        if ($fixture && $links) {
+            $fixture->setLinks($links);
+        }
+
+        return $fixture;
     }
 
 
@@ -185,6 +193,8 @@ class Documentation
                 ];
             }
         }
+
+        ksort($doc);
 
         return json_encode($doc);
     }
@@ -243,5 +253,14 @@ class Documentation
         }
 
         return $this->linkReferences[$refName];
+    }
+
+    /**
+     * @param string $className
+     * @return bool
+     */
+    private function isClassAllowedToDoc(string $className): bool
+    {
+        return $this->enableAutoDocumentation || array_key_exists($className, $this->configEntities);
     }
 }
