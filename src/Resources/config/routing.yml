@@ -1,9 +1,9 @@
 adlarge_fixtures_documentation:
-  path:     /fixtures/doc
-  methods:  [GET]
-  defaults: { _controller: Adlarge\FixturesDocumentationBundle\Controller\FixturesDocumentationController:generateDocumentationAction }
+    path:     /fixtures/doc
+    methods:  [GET]
+    defaults: { _controller: Adlarge\FixturesDocumentationBundle\Controller\FixturesDocumentationController:generateDocumentationAction }
 
 adlarge_fixtures_reload:
-  path:     /fixtures/reload
-  methods:  [GET]
-  defaults: { _controller: Adlarge\FixturesDocumentationBundle\Controller\FixturesDocumentationController:reloadAction }
+    path:     /fixtures/reload
+    methods:  [GET]
+    defaults: { _controller: Adlarge\FixturesDocumentationBundle\Controller\FixturesDocumentationController:reloadAction }
