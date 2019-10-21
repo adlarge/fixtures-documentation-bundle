@@ -33,8 +33,8 @@ class Documentation
      */
     private $linkReferences = [];
 
-    private $CONFIG_WITH_PROPERTIES = 'CONFIG_WITH_PROPERTIES';
-    private $CONFIG_WITHOUT_PROPERTIES = 'CONFIG_WITHOUT_PROPERTIES';
+    private const CONFIG_WITH_PROPERTIES = 'CONFIG_WITH_PROPERTIES';
+    private const CONFIG_WITHOUT_PROPERTIES = 'CONFIG_WITHOUT_PROPERTIES';
 
     /**
      * Documentation constructor.
@@ -119,12 +119,12 @@ class Documentation
     {
         $className = (new ReflectionClass($entity))->getShortName();
         $links = [];
-        $config = $this->CONFIG_WITH_PROPERTIES;
+        $config = self::CONFIG_WITH_PROPERTIES;
 
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
         if (!$this->configEntities || array_key_exists($className, $this->configEntities) && sizeof($this->configEntities[$className]) === 0){
             // There is no config at all or there is one for this entity but it's empty
-            $config = $this->CONFIG_WITHOUT_PROPERTIES;
+            $config = self::CONFIG_WITHOUT_PROPERTIES;
             $properties = (new ReflectionClass($entity))->getMethods(ReflectionMethod::IS_PUBLIC);
         } else if (!array_key_exists($className, $this->configEntities)) {
             // There is configEntities, and there is entities inside, but not this one, so we ignore it
@@ -136,7 +136,7 @@ class Documentation
         $fixtureData = [];
         foreach ($properties as $property) {
             try {
-                if ($config === $this->CONFIG_WITH_PROPERTIES) {
+                if ($config === self::CONFIG_WITH_PROPERTIES) {
                     $value = $propertyAccessor->getValue($entity, $property);
                 } else {
                     if (strpos($property->name, 'get') !== 0) {
