@@ -242,15 +242,82 @@ class DocumentationTest extends TestCase
         $this->assertCount(0, $mockDocumentation->getSections());
     }
 
-    public function testAddFixtureEntityWithNonConfigEntity(): void
+    public function testAddFixtureEntityWithEmptyConfigEntities(): void
     {
+        $mockFixture = Mockery::mock(Fixture::class)
+            ->makePartial();
+        $mockFixture->shouldNotReceive('setLinks');
+
         $mockDocumentation = Mockery::mock(Documentation::class, [[]])
             ->makePartial();
 
-        $mockDocumentation->shouldNotReceive('addFixture')
+        $mockDocumentation->shouldReceive('addFixture')
+            ->once()
             ->with('Product', [
-                'category' => 'category 1'
-            ]);
+                'Id' => 1,
+                'Name' => 'product 1',
+                'Category' => 'category 1',
+            ],
+                Mockery::on(function($argument) {
+                    return strpos($argument, 'Product-') !== false;
+                })
+            )
+            ->andReturn($mockFixture);
+
+        $product = (new Product())
+            ->setId(1)
+            ->setName('product 1')
+            ->setCategory('category 1');
+
+        $mockDocumentation->addFixtureEntity($product);
+        $this->assertCount(0, $mockDocumentation->getSections());
+    }
+
+    public function testAddFixtureEntityWithEmptyConfigEntitiesEntity(): void
+    {
+        $mockFixture = Mockery::mock(Fixture::class)
+            ->makePartial();
+        $mockFixture->shouldNotReceive('setLinks');
+
+        $mockDocumentation = Mockery::mock(Documentation::class, [
+            ['Product' => []]
+        ])
+            ->makePartial();
+
+        $mockDocumentation->shouldReceive('addFixture')
+            ->once()
+            ->with('Product', [
+                'Id' => 1,
+                'Name' => 'product 1',
+                'Category' => 'category 1',
+            ],
+                Mockery::on(function($argument) {
+                    return strpos($argument, 'Product-') !== false;
+                })
+            )
+            ->andReturn($mockFixture);
+
+        $product = (new Product())
+            ->setId(1)
+            ->setName('product 1')
+            ->setCategory('category 1');
+
+        $mockDocumentation->addFixtureEntity($product);
+        $this->assertCount(0, $mockDocumentation->getSections());
+    }
+
+    public function testAddFixtureEntityWithNonEmptyConfigEntitiesEntity(): void
+    {
+        $mockFixture = Mockery::mock(Fixture::class)
+            ->makePartial();
+        $mockFixture->shouldNotReceive('setLinks');
+
+        $mockDocumentation = Mockery::mock(Documentation::class, [
+            ['Customer' => []]
+        ])
+            ->makePartial();
+
+        $mockDocumentation->shouldNotReceive('addFixture');
 
         $product = (new Product())
             ->setId(1)
