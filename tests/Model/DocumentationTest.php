@@ -9,7 +9,7 @@ use Adlarge\FixturesDocumentationBundle\helpers\Model\Category;
 use Adlarge\FixturesDocumentationBundle\helpers\Model\Product;
 use Adlarge\FixturesDocumentationBundle\helpers\Model\ProductComplex;
 use Adlarge\FixturesDocumentationBundle\helpers\Model\ProductPublic;
-use Adlarge\FixturesDocumentationBundle\helpers\Model\ProductWithoutId;
+use Adlarge\FixturesDocumentationBundle\helpers\Model\ProductWithGetters;
 use Adlarge\FixturesDocumentationBundle\Model\Documentation;
 use Adlarge\FixturesDocumentationBundle\Model\Fixture;
 use Mockery;
@@ -295,24 +295,24 @@ class DocumentationTest extends TestCase
         $mockFixture->shouldNotReceive('setLinks');
 
         $mockDocumentation = Mockery::mock(Documentation::class, [
-            ['Product' => []]
+            ['ProductWithGetters' => []]
         ])
             ->makePartial();
 
         $mockDocumentation->shouldReceive('addFixture')
             ->once()
-            ->with('Product', [
+            ->with('ProductWithGetters', [
                 'Id' => 1,
                 'Name' => 'product 1',
-                'Category' => 'category 1',
+                'UniqId' => 'uniqid',
             ],
                 Mockery::on(function($argument) {
-                    return strpos($argument, 'Product-') !== false;
+                    return strpos($argument, 'ProductWithGetters-') !== false;
                 })
             )
             ->andReturn($mockFixture);
 
-        $product = (new Product())
+        $product = (new ProductWithGetters())
             ->setId(1)
             ->setName('product 1')
             ->setCategory('category 1');
