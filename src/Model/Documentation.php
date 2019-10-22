@@ -228,7 +228,7 @@ class Documentation
 
         $section = new Section($sectionTitle);
         $this->sections[] = $section;
-
+        sort($this->sections);
         return $section;
     }
 

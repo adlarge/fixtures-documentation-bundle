@@ -68,6 +68,21 @@ class DocumentationTest extends TestCase
     /**
      * @throws DuplicateIdFixtureException
      */
+    public function testAddFixtureWithSameSectionForOrder(): void
+    {
+        $documentation = new Documentation([]);
+
+        $documentation->addFixture('Zytum', ['id' => 1, 'name' => 'fixture1']);
+        $documentation->addFixture('Absolute', ['id' => 2, 'name' => 'fixture2']);
+
+        $this->assertCount(2, $documentation->getSections());
+        $this->assertEquals('Absolute', $documentation->getSections()[0]->getTitle());
+        $this->assertEquals('Zytum', $documentation->getSections()[1]->getTitle());
+    }
+
+    /**
+     * @throws DuplicateIdFixtureException
+     */
     public function testAddFixtureWithDifferentSection(): void
     {
         $documentation = new Documentation([]);
@@ -355,7 +370,7 @@ class DocumentationTest extends TestCase
             ->addLink('pseudo', $fixture1);
 
         $this->assertSame(
-            '{"some":{"fixtures":[{"id":"some-1","data":{"id":1,"name":"fixture1"},"links":[]},{"id":"some-2","data":{"id":2,"name":"fixture2"},"links":[]}]},"others":{"fixtures":[{"id":"others-1","data":{"id":1,"pseudo":"autre2"},"links":{"pseudo":"some-1"}}]}}',
+            '{"others":{"fixtures":[{"id":"others-1","data":{"id":1,"pseudo":"autre2"},"links":{"pseudo":"some-1"}}]},"some":{"fixtures":[{"id":"some-1","data":{"id":1,"name":"fixture1"},"links":[]},{"id":"some-2","data":{"id":2,"name":"fixture2"},"links":[]}]}}',
             $documentation->toJson()
         );
     }
