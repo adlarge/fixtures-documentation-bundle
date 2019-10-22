@@ -139,7 +139,8 @@ class Documentation
                 if ($config === self::CONFIG_WITH_PROPERTIES) {
                     $value = $propertyAccessor->getValue($entity, $property);
                 } else {
-                    if (strpos($property->name, 'get') !== 0) {
+                    /* @var ReflectionMethod property*/
+                    if (strpos($property->name, 'get') !== 0 || $property->getNumberOfParameters()) {
                         // We only took method that begin with 'get'
                         continue;
                     }

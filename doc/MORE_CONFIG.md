@@ -78,6 +78,12 @@ class Product
         return uniqid();
     }
 
+    public function getIdWithParameter(string $disciminant): string
+    {
+        return str($this->id) . $discriminant;
+    }
+
+
     public function getName(): string
     {
         return $this->name;
@@ -91,8 +97,10 @@ class Product
 ```
 
 with the classic example, you'll see the same
+
 * minus category from product because it doesn't have a getter
 * plus uniqueId because it's a public function that starts with 'get'
+* minus getIdWithParameter because it has parameters
 * minus the links towards customers because Customer entity won't be documented
 * minus Customer entities, the option being absent in configuration, it won't be documented
 
