@@ -40,6 +40,11 @@ class FixturesDocumentationExtension extends Extension
         );
 
         $container->setParameter(
+            'adlarge_fixtures_documentation.filePath',
+            $config['filePath']
+        );
+
+        $container->setParameter(
             'adlarge_fixtures_documentation.reloadCommands',
             $config['reloadCommands']
         );

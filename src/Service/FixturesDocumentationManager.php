@@ -41,16 +41,21 @@ class FixturesDocumentationManager
     /**
      * FixturesDocumentationManager constructor.
      *
-     * @param string $projectDir
-     * @param array $reloadCommands
-     * @param array $configEntities
+     * @param string      $projectDir
+     * @param array       $reloadCommands
+     * @param array       $configEntities
+     * @param string|null $filePath
      *
      * @throws DuplicateIdFixtureException
      */
-    public function __construct(string $projectDir, array $reloadCommands, array $configEntities)
-    {
+    public function __construct(
+        string $projectDir,
+        array $reloadCommands,
+        array $configEntities,
+        ?string $filePath
+    ) {
         $this->projectDir = $projectDir;
-        $this->jsonFilePath = $this->projectDir . '/var/' . self::FILE_NAME;
+        $this->jsonFilePath = $this->projectDir . $filePath ?: '/var/' . self::FILE_NAME;
         $this->reloadCommands = $reloadCommands;
         $this->configEntities = $configEntities;
 
