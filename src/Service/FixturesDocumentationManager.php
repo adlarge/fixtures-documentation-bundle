@@ -44,7 +44,7 @@ class FixturesDocumentationManager
      * @param string      $projectDir
      * @param array       $reloadCommands
      * @param array       $configEntities
-     * @param string|null $filePath
+     * @param string|null $fileDest
      *
      * @throws DuplicateIdFixtureException
      */
@@ -52,10 +52,12 @@ class FixturesDocumentationManager
         string $projectDir,
         array $reloadCommands,
         array $configEntities,
-        ?string $filePath
+        ?string $fileDest
     ) {
         $this->projectDir = $projectDir;
-        $this->jsonFilePath = $this->projectDir . $filePath ?: '/var/' . self::FILE_NAME;
+        $this->jsonFilePath = $fileDest
+            ? preg_replace('#/+#', '/', $fileDest . '/' . self::FILE_NAME)
+            : $this->projectDir . '/var/' . self::FILE_NAME;
         $this->reloadCommands = $reloadCommands;
         $this->configEntities = $configEntities;
 
@@ -100,7 +102,12 @@ class FixturesDocumentationManager
      */
     public function save(): void
     {
+        $dir = dirname($this->jsonFilePath);
         $json = $this->documentation->toJson();
+
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
 
         $file = fopen($this->jsonFilePath, 'wb');
         fwrite($file, $json);

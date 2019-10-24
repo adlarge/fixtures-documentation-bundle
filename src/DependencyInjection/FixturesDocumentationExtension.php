@@ -40,8 +40,8 @@ class FixturesDocumentationExtension extends Extension
         );
 
         $container->setParameter(
-            'adlarge_fixtures_documentation.filePath',
-            $config['filePath']
+            'adlarge_fixtures_documentation.fileDest',
+            $config['fileDest']
         );
 
         $container->setParameter(

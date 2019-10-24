@@ -29,7 +29,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('enableAutoDocumentation')
                     ->defaultValue(false)
                 ->end()
-                ->scalarNode('filePath')
+                ->scalarNode('fileDest')
                     ->defaultValue(null)
                 ->end()
                 ->arrayNode('reloadCommands')
