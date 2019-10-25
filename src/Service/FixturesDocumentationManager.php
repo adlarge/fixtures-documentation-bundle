@@ -56,7 +56,7 @@ class FixturesDocumentationManager
     ) {
         $this->projectDir = $projectDir;
         $this->jsonFilePath = $fileDest
-            ? preg_replace('#/+#', '/', $fileDest . '/' . self::FILE_NAME)
+            ? $this->getCustomFilePath($fileDest)
             : $this->projectDir . '/var/' . self::FILE_NAME;
         $this->reloadCommands = $reloadCommands;
         $this->configEntities = $configEntities;
@@ -159,5 +159,17 @@ class FixturesDocumentationManager
     public function isListening(): bool
     {
         return $this->isListening;
+    }
+
+    /**
+     * @param string $customPath
+     *
+     * @return string
+     */
+    private function getCustomFilePath(string $customPath): string
+    {
+        return $customPath[-1] === '/'
+            ? $customPath . self::FILE_NAME
+            : $customPath . '/' . self::FILE_NAME;
     }
 }

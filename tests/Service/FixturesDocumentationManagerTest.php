@@ -91,9 +91,7 @@ class FixturesDocumentationManagerTest extends TestCase
      */
     public function testSaveToCustomDestination(): void
     {
-        vfsStream::newDirectory('var')->at($this->root);
-
-        $dest = $this->root->url() . '/var/test';
+        $dest = $this->root->url() . '/test';
         $documentationManager = new FixturesDocumentationManager(
             '',
             ['dummyCommand'],
@@ -104,7 +102,26 @@ class FixturesDocumentationManagerTest extends TestCase
         $documentationManager->save();
 
         $this->assertFalse($this->root->hasChild('var/fixtures.documentation.json'));
-        $this->assertTrue($this->root->hasChild('var/test/fixtures.documentation.json'));
+        $this->assertTrue($this->root->hasChild('test/fixtures.documentation.json'));
+    }
+
+    /**
+     * @throws DuplicateIdFixtureException
+     */
+    public function testSaveToCustomDestinationWithEndSlash(): void
+    {
+        $dest = $this->root->url() . '/test/';
+        $documentationManager = new FixturesDocumentationManager(
+            '',
+            ['dummyCommand'],
+            [],
+            $dest
+        );
+
+        $documentationManager->save();
+
+        $this->assertFalse($this->root->hasChild('var/fixtures.documentation.json'));
+        $this->assertTrue($this->root->hasChild('test/fixtures.documentation.json'));
     }
 
     /**
