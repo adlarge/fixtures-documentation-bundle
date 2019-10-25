@@ -2,11 +2,11 @@
 
 namespace Tests\Model;
 
+use Adlarge\FixturesDocumentationBundle\Exception\DuplicateIdFixtureException;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
 use Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager;
 use Adlarge\FixturesDocumentationBundle\Model\Documentation;
-use \Adlarge\FixturesDocumentationBundle\Exception\DuplicateFixtureException;
 use org\bovigo\vfs\vfsStream;
 use RuntimeException;
 use Mockery;
@@ -32,7 +32,7 @@ class FixturesDocumentationManagerTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testGetDocumentation(): void
     {
@@ -40,14 +40,15 @@ class FixturesDocumentationManagerTest extends TestCase
         $documentationManager = new FixturesDocumentationManager(
             $this->root->url(),
             ['dummyCommand'],
-            []
+            [],
+            null
         );
 
         $this->assertInstanceOf(Documentation::class, $documentationManager->getDocumentation());
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testReset(): void
     {
@@ -55,7 +56,8 @@ class FixturesDocumentationManagerTest extends TestCase
         $documentationManager = new FixturesDocumentationManager(
             $this->root->url(),
             ['dummyCommand'],
-            []
+            [],
+            null
         );
 
         file_put_contents(
@@ -68,7 +70,7 @@ class FixturesDocumentationManagerTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testSave(): void
     {
@@ -76,15 +78,54 @@ class FixturesDocumentationManagerTest extends TestCase
         $documentationManager = new FixturesDocumentationManager(
             $this->root->url(),
             ['dummyCommand'],
-            []
+            [],
+            null
         );
 
         $documentationManager->save();
         $this->assertTrue($this->root->hasChild('var/fixtures.documentation.json'));
     }
 
-     /**
-     * @throws DuplicateFixtureException
+    /**
+     * @throws DuplicateIdFixtureException
+     */
+    public function testSaveToCustomDestination(): void
+    {
+        $dest = $this->root->url() . '/test';
+        $documentationManager = new FixturesDocumentationManager(
+            '',
+            ['dummyCommand'],
+            [],
+            $dest
+        );
+
+        $documentationManager->save();
+
+        $this->assertFalse($this->root->hasChild('var/fixtures.documentation.json'));
+        $this->assertTrue($this->root->hasChild('test/fixtures.documentation.json'));
+    }
+
+    /**
+     * @throws DuplicateIdFixtureException
+     */
+    public function testSaveToCustomDestinationWithEndSlash(): void
+    {
+        $dest = $this->root->url() . '/test/';
+        $documentationManager = new FixturesDocumentationManager(
+            '',
+            ['dummyCommand'],
+            [],
+            $dest
+        );
+
+        $documentationManager->save();
+
+        $this->assertFalse($this->root->hasChild('var/fixtures.documentation.json'));
+        $this->assertTrue($this->root->hasChild('test/fixtures.documentation.json'));
+    }
+
+    /**
+     * @throws DuplicateIdFixtureException
      */
     public function testInitDocumentation(): void
     {
@@ -97,14 +138,15 @@ class FixturesDocumentationManagerTest extends TestCase
         $documentationManager = new FixturesDocumentationManager(
             $this->root->url(),
             ['dummyCommand'],
-            []
+            [],
+            null
         );
 
         $this->assertInstanceOf(Documentation::class, $documentationManager->getDocumentation());
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testReloadWithUnknownCommand(): void
     {
@@ -113,14 +155,15 @@ class FixturesDocumentationManagerTest extends TestCase
         $documentationManager = new FixturesDocumentationManager(
             $this->root->url(),
             ['knownCommand'],
-            []
+            [],
+            null
         );
 
         $documentationManager->reload();
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testReload(): void
     {
@@ -137,35 +180,38 @@ class FixturesDocumentationManagerTest extends TestCase
         $documentationManager = new FixturesDocumentationManager(
             $this->root->url(),
             ['workingCommand with args', 'workingCommand2 with other args'],
-            []
+            [],
+            null
         );
 
         $this->assertSame(1, $documentationManager->reload());
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testIsListeningByDefault(): void
     {
         $documentationManager = new FixturesDocumentationManager(
             '',
             ['dummyCommand'],
-            []
+            [],
+            null
         );
 
         $this->assertFalse($documentationManager->isListening());
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testIsListeningStart(): void
     {
         $documentationManager = new FixturesDocumentationManager(
             '',
             ['dummyCommand'],
-            []
+            [],
+            null
         );
 
         $documentationManager->startListening();
@@ -174,14 +220,15 @@ class FixturesDocumentationManagerTest extends TestCase
     }
 
     /**
-     * @throws DuplicateFixtureException
+     * @throws DuplicateIdFixtureException
      */
     public function testIsListeningStartAndStop(): void
     {
         $documentationManager = new FixturesDocumentationManager(
             '',
             ['dummyCommand'],
-            []
+            [],
+            null
         );
 
         $documentationManager->startListening();

@@ -70,6 +70,7 @@ You can define vars by creating the file `config/packages/dev/adlarge_fixtures_d
             - ....
         listenedCommand: 'doctrine:fixtures:load'
         enableAutoDocumentation: true
+        fileDest: '%kernel.project_dir%/custom-folder'
         configEntities:
             Product:
                 - id
@@ -79,11 +80,12 @@ You can define vars by creating the file `config/packages/dev/adlarge_fixtures_d
                 - firstname
                 - lastname
 
-* title has a default value 'Fixtures documentation'
-* listenedCommand has a default value 'doctrine:fixtures:load'. For Alice bundle, you can set it to 'hautelook:fixtures:load'
-* reloadCommand is an optional array of commands you want to run from the view. If present a button to run these command will be visible in this view
-* enableAutoDocumentation is a boolean default to false. Set it to true if you want that all entities in fixtures are auto documented in postPersist
-* configEntities is an optional array of configurations for your entities you want to auto-document
+* **title -** has a default value 'Fixtures documentation'
+* **listenedCommand -** has a default value 'doctrine:fixtures:load'. For Alice bundle, you can set it to 'hautelook:fixtures:load'
+* **reloadCommand -** is an optional array of commands you want to run from the view. If present a button to run these command will be visible in this view
+* **enableAutoDocumentation -** is a boolean default to false. Set it to true if you want that all entities in fixtures are auto documented in postPersist
+* **fileDest -** override default documentation file location in var folder
+* **configEntities -** is an optional array of configurations for your entities you want to auto-document
 
 Then you can install assets :
 

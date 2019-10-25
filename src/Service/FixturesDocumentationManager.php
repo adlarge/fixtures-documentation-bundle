@@ -41,16 +41,23 @@ class FixturesDocumentationManager
     /**
      * FixturesDocumentationManager constructor.
      *
-     * @param string $projectDir
-     * @param array $reloadCommands
-     * @param array $configEntities
+     * @param string      $projectDir
+     * @param array       $reloadCommands
+     * @param array       $configEntities
+     * @param string|null $fileDest
      *
      * @throws DuplicateIdFixtureException
      */
-    public function __construct(string $projectDir, array $reloadCommands, array $configEntities)
-    {
+    public function __construct(
+        string $projectDir,
+        array $reloadCommands,
+        array $configEntities,
+        ?string $fileDest
+    ) {
         $this->projectDir = $projectDir;
-        $this->jsonFilePath = $this->projectDir . '/var/' . self::FILE_NAME;
+        $this->jsonFilePath = $fileDest
+            ? $this->getCustomFilePath($fileDest)
+            : $this->projectDir . '/var/' . self::FILE_NAME;
         $this->reloadCommands = $reloadCommands;
         $this->configEntities = $configEntities;
 
@@ -95,7 +102,12 @@ class FixturesDocumentationManager
      */
     public function save(): void
     {
+        $dir = dirname($this->jsonFilePath);
         $json = $this->documentation->toJson();
+
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
 
         $file = fopen($this->jsonFilePath, 'wb');
         fwrite($file, $json);
@@ -147,5 +159,17 @@ class FixturesDocumentationManager
     public function isListening(): bool
     {
         return $this->isListening;
+    }
+
+    /**
+     * @param string $customPath
+     *
+     * @return string
+     */
+    private function getCustomFilePath(string $customPath): string
+    {
+        return $customPath[-1] === '/'
+            ? $customPath . self::FILE_NAME
+            : $customPath . '/' . self::FILE_NAME;
     }
 }
