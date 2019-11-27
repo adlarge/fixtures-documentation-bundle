@@ -3,6 +3,7 @@
 
 # Composer
 /vendor/
+composer.lock
 
 # Tests
 tests/_output/
