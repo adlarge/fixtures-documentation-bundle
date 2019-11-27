@@ -16,9 +16,8 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('adlarge_fixtures_documentation');
-        $rootNode
+        $treeBuilder = new TreeBuilder('adlarge_fixtures_documentation');
+        $treeBuilder->getRootNode()
             ->children()
                 ->scalarNode('title')
                     ->defaultValue('Fixtures documentation')
