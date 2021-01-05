@@ -5,7 +5,7 @@ namespace Adlarge\FixturesDocumentationBundle\EventListener;
 
 use Adlarge\FixturesDocumentationBundle\Exception\DuplicateIdFixtureException;
 use Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager;
-use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use ReflectionException;
 
 class DoctrineListener
