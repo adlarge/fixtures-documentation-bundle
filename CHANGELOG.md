@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.3.1] - 2021-01-06
+### Changed
+- Remove args type in postPersist method to prevent errors with next Doctrine versions.
+
 ## [1.3.0] - 2019-11-27
 ### Added
 - Symfony5 support
