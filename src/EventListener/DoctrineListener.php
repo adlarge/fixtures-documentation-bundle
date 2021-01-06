@@ -5,6 +5,7 @@ namespace Adlarge\FixturesDocumentationBundle\EventListener;
 
 use Adlarge\FixturesDocumentationBundle\Exception\DuplicateIdFixtureException;
 use Adlarge\FixturesDocumentationBundle\Service\FixturesDocumentationManager;
+use Doctrine\Common\Persistence\Event\LifecycleEventArgs as OldLifecycleEventArgs;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use ReflectionException;
 
@@ -23,11 +24,11 @@ class DoctrineListener
     }
 
     /**
-     * @param LifecycleEventArgs $args
+     * @param LifecycleEventArgs|OldLifecycleEventArgs $args
      * @throws ReflectionException
      * @throws DuplicateIdFixtureException
      */
-    public function postPersist(LifecycleEventArgs $args)
+    public function postPersist($args)
     {
         if ($this->documentationManager->isListening() && $this->enableAutoDocumentation) {
             $entity = $args->getObject();
